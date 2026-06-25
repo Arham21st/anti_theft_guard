@@ -14,10 +14,10 @@ class FrontCameraScreen extends StatefulWidget {
 
 class _FrontCameraScreenState extends State<FrontCameraScreen> {
   bool _autoCapture = true;
-  int _captureDelay = 0;  // 0=0s, 1=2s, 2=5s
-  int _maxPhotos = 1;     // 0=1, 1=3, 2=5
+  int _captureDelay = 0; // 0=0s, 1=2s, 2=5s
+  int _maxPhotos = 1; // 0=1, 1=3, 2=5
 
-  final _delays = ['0s', '2s', '5s'];
+  final _delays = ['10s', '20s', '30s'];
   final _photoCounts = ['1', '3', '5'];
 
   @override
@@ -35,8 +35,11 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.border),
             ),
-            child: const Icon(Icons.arrow_back_ios_new_rounded,
-                size: 16, color: AppColors.textPrimary),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 16,
+              color: AppColors.textPrimary,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -51,9 +54,10 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: AppColors.info.withOpacity(0.3)),
               ),
-              child: Text('3 photos',
-                  style: AppTextStyles.labelSmall
-                      .copyWith(color: AppColors.info)),
+              child: Text(
+                '3 photos',
+                style: AppTextStyles.labelSmall.copyWith(color: AppColors.info),
+              ),
             ),
           ),
         ],
@@ -74,28 +78,35 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
                   child: Row(
                     children: [
                       Container(
-                        width: 44, height: 44,
+                        width: 44,
+                        height: 44,
                         decoration: BoxDecoration(
                           color: _autoCapture
                               ? AppColors.info.withOpacity(0.15)
                               : AppColors.surfaceElevated,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(Icons.camera_front_rounded,
-                            color: _autoCapture
-                                ? AppColors.info
-                                : AppColors.textTertiary,
-                            size: 22),
+                        child: Icon(
+                          Icons.camera_front_rounded,
+                          color: _autoCapture
+                              ? AppColors.info
+                              : AppColors.textTertiary,
+                          size: 22,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Auto-capture on Unlock',
-                                style: AppTextStyles.titleMedium),
-                            Text('Capture when someone tries to unlock',
-                                style: AppTextStyles.bodySmall),
+                            Text(
+                              'Auto-capture in Stealth Mode',
+                              style: AppTextStyles.titleMedium,
+                            ),
+                            Text(
+                              'Capture recurring images when stealth mode is activated',
+                              style: AppTextStyles.bodySmall,
+                            ),
                           ],
                         ),
                       ),
@@ -106,8 +117,9 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
                         activeColor: Colors.white,
                         inactiveThumbColor: AppColors.textTertiary,
                         inactiveTrackColor: AppColors.surfaceHighest,
-                        trackOutlineColor:
-                            WidgetStateProperty.all(Colors.transparent),
+                        trackOutlineColor: WidgetStateProperty.all(
+                          Colors.transparent,
+                        ),
                       ),
                     ],
                   ),
@@ -133,8 +145,10 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Max Photos per Trigger',
-                          style: AppTextStyles.titleMedium),
+                      Text(
+                        'Max Photos per Trigger',
+                        style: AppTextStyles.titleMedium,
+                      ),
                       const SizedBox(height: 12),
                       _SegmentedSelector(
                         options: _photoCounts,
@@ -153,7 +167,8 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
                   icon: Icons.camera_front_rounded,
                   onPressed: () {},
                   gradient: const LinearGradient(
-                      colors: [AppColors.info, Color(0xFF0288D1)]),
+                    colors: [AppColors.info, Color(0xFF0288D1)],
+                  ),
                   glowColor: AppColors.info,
                 ).animate().fadeIn(delay: 420.ms),
                 const SizedBox(height: 28),
@@ -184,15 +199,21 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
             ),
           ),
           const Center(
-            child: Icon(Icons.camera_front_rounded,
-                color: Colors.white12, size: 48),
+            child: Icon(
+              Icons.camera_front_rounded,
+              color: Colors.white12,
+              size: 48,
+            ),
           ),
           Positioned(
-            bottom: 12, left: 0, right: 0,
+            bottom: 12,
+            left: 0,
+            right: 0,
             child: Center(
-              child: Text('Front Camera Preview',
-                  style: AppTextStyles.bodySmall
-                      .copyWith(color: Colors.white24)),
+              child: Text(
+                'Front Camera Preview',
+                style: AppTextStyles.bodySmall.copyWith(color: Colors.white24),
+              ),
             ),
           ),
           // Corner brackets
@@ -207,14 +228,50 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
     const len = 16.0;
     const thick = 2.0;
     return [
-      Positioned(top: 12, left: 12,
-          child: _CornerBracket(color: color, len: len, thick: thick, top: true, left: true)),
-      Positioned(top: 12, right: 12,
-          child: _CornerBracket(color: color, len: len, thick: thick, top: true, left: false)),
-      Positioned(bottom: 12, left: 12,
-          child: _CornerBracket(color: color, len: len, thick: thick, top: false, left: true)),
-      Positioned(bottom: 12, right: 12,
-          child: _CornerBracket(color: color, len: len, thick: thick, top: false, left: false)),
+      Positioned(
+        top: 12,
+        left: 12,
+        child: _CornerBracket(
+          color: color,
+          len: len,
+          thick: thick,
+          top: true,
+          left: true,
+        ),
+      ),
+      Positioned(
+        top: 12,
+        right: 12,
+        child: _CornerBracket(
+          color: color,
+          len: len,
+          thick: thick,
+          top: true,
+          left: false,
+        ),
+      ),
+      Positioned(
+        bottom: 12,
+        left: 12,
+        child: _CornerBracket(
+          color: color,
+          len: len,
+          thick: thick,
+          top: false,
+          left: true,
+        ),
+      ),
+      Positioned(
+        bottom: 12,
+        right: 12,
+        child: _CornerBracket(
+          color: color,
+          len: len,
+          thick: thick,
+          top: false,
+          left: false,
+        ),
+      ),
     ];
   }
 
@@ -241,10 +298,13 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
                 children: [
                   Icon(item.$2, color: AppColors.success, size: 16),
                   const SizedBox(height: 3),
-                  Text(item.$1,
-                      style: AppTextStyles.labelSmall
-                          .copyWith(color: AppColors.success),
-                      textAlign: TextAlign.center),
+                  Text(
+                    item.$1,
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: AppColors.success,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ],
               ),
             ),
@@ -266,38 +326,46 @@ class _FrontCameraScreenState extends State<FrontCameraScreen> {
           return Container(
             width: 76,
             decoration: BoxDecoration(
-              color: isCapture
-                  ? AppColors.surfaceElevated
-                  : AppColors.surface,
+              color: isCapture ? AppColors.surfaceElevated : AppColors.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                  color: isCapture
-                      ? AppColors.borderHighlight
-                      : AppColors.border),
+                color: isCapture ? AppColors.borderHighlight : AppColors.border,
+              ),
             ),
             child: isCapture
                 ? Stack(
                     alignment: Alignment.center,
                     children: [
-                      const Icon(Icons.person_rounded,
-                          color: Colors.white12, size: 28),
+                      const Icon(
+                        Icons.person_rounded,
+                        color: Colors.white12,
+                        size: 28,
+                      ),
                       Positioned(
-                        bottom: 4, right: 4,
+                        bottom: 4,
+                        right: 4,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 2),
+                            horizontal: 4,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.background.withOpacity(0.8),
                             borderRadius: BorderRadius.circular(4),
                           ),
-                          child: Text('0${i + 1}',
-                              style: AppTextStyles.labelSmall),
+                          child: Text(
+                            '0${i + 1}',
+                            style: AppTextStyles.labelSmall,
+                          ),
                         ),
                       ),
                     ],
                   )
-                : const Icon(Icons.add_rounded,
-                    color: AppColors.textTertiary, size: 24),
+                : const Icon(
+                    Icons.add_rounded,
+                    color: AppColors.textTertiary,
+                    size: 24,
+                  ),
           );
         },
       ),
@@ -328,19 +396,26 @@ class _SegmentedSelector extends StatelessWidget {
             child: AnimatedContainer(
               duration: 200.ms,
               height: 38,
-              margin: EdgeInsets.only(right: e.key < options.length - 1 ? 8 : 0),
+              margin: EdgeInsets.only(
+                right: e.key < options.length - 1 ? 8 : 0,
+              ),
               decoration: BoxDecoration(
-                color: isSelected ? color.withOpacity(0.15) : AppColors.surfaceElevated,
+                color: isSelected
+                    ? color.withOpacity(0.15)
+                    : AppColors.surfaceElevated,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                    color: isSelected ? color.withOpacity(0.5) : AppColors.border),
+                  color: isSelected ? color.withOpacity(0.5) : AppColors.border,
+                ),
               ),
               child: Center(
-                child: Text(e.value,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      color: isSelected ? color : AppColors.textSecondary,
-                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    )),
+                child: Text(
+                  e.value,
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: isSelected ? color : AppColors.textSecondary,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ),
@@ -357,12 +432,22 @@ class _CrosshairPainter extends CustomPainter {
       ..color = Colors.white12
       ..strokeWidth = 1;
     canvas.drawLine(
-        Offset(size.width / 2, 0), Offset(size.width / 2, size.height), p);
+      Offset(size.width / 2, 0),
+      Offset(size.width / 2, size.height),
+      p,
+    );
     canvas.drawLine(
-        Offset(0, size.height / 2), Offset(size.width, size.height / 2), p);
+      Offset(0, size.height / 2),
+      Offset(size.width, size.height / 2),
+      p,
+    );
     canvas.drawCircle(
-        Offset(size.width / 2, size.height / 2), 16, p..style = PaintingStyle.stroke);
+      Offset(size.width / 2, size.height / 2),
+      16,
+      p..style = PaintingStyle.stroke,
+    );
   }
+
   @override
   bool shouldRepaint(_) => false;
 }
@@ -388,18 +473,23 @@ class _CornerBracket extends StatelessWidget {
       height: len,
       child: CustomPaint(
         painter: _BracketPainter(
-            color: color, thick: thick, top: top, left: left),
+          color: color,
+          thick: thick,
+          top: top,
+          left: left,
+        ),
       ),
     );
   }
 }
 
 class _BracketPainter extends CustomPainter {
-  const _BracketPainter(
-      {required this.color,
-      required this.thick,
-      required this.top,
-      required this.left});
+  const _BracketPainter({
+    required this.color,
+    required this.thick,
+    required this.top,
+    required this.left,
+  });
   final Color color;
   final double thick;
   final bool top;

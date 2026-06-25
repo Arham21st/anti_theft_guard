@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'core/config/app_env.dart';
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
 import 'features/splash/splash_screen.dart';
@@ -19,6 +20,7 @@ import 'features/surveillance/back_camera_screen.dart';
 import 'features/surveillance/video_recording_screen.dart';
 import 'features/battery/battery_monitor_screen.dart';
 import 'features/sms/emergency_sms_screen.dart';
+import 'admin/admin_shell.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,12 +42,13 @@ class AntiTheftApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: AppStrings.appName,
+      title: AppEnv.displayName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
       initialRoute: AppRoutes.splash,
       routes: {
         AppRoutes.splash: (_) => const SplashScreen(),
+        AppRoutes.admin: (_) => const AdminShell(),
         AppRoutes.onboarding: (_) => const OnboardingScreen(),
         AppRoutes.home: (_) => const BottomNavShell(),
         AppRoutes.triggerSettings: (_) => const TriggerSettingsScreen(),

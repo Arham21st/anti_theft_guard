@@ -39,7 +39,45 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
+# ==========================================
+# Android Specifics
+# ==========================================
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android Studio / Gradle local configurations
+.gradle/
+local.properties
+*.keystore
+*.jks
+/android/.gradle/
+/android/captures/
+/android/local.properties
+
+# ==========================================
+# iOS Specifics
+# ==========================================
+# CocoaPods - Pods/ should be ignored; Podfile.lock should be tracked
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+
+# Xcode user settings and workspace state
+**/ios/**/project.xcworkspace/xcuserdata/
+**/ios/**/xcuserdata/
+**/ios/**/DerivedData/
+
+# ==========================================
+# Web Specifics
+# ==========================================
+# Flutter web build outputs are handled by /build/, but local server caches live here
+.web_plugins/
+
+# ==========================================
+# Environment / Secret Configurations
+# ==========================================
+.env
+.env.*

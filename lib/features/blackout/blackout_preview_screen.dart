@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -18,18 +19,37 @@ class _BlackoutPreviewScreenState extends State<BlackoutPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (_showingBlackout) return _BlackoutOverlay(onExit: () => setState(() => _showingBlackout = false));
+    if (_showingBlackout) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+      return _BlackoutOverlay(
+        onExit: () async {
+          await SystemChrome.setEnabledSystemUIMode(
+            SystemUiMode.manual,
+            overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+          );
+          setState(() => _showingBlackout = false);
+        },
+      );
+    }
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background, elevation: 0,
+        backgroundColor: AppColors.background,
+        elevation: 0,
         leading: IconButton(
           icon: Container(
             padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.border)),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: AppColors.textPrimary),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 16,
+              color: AppColors.textPrimary,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -50,12 +70,18 @@ class _BlackoutPreviewScreenState extends State<BlackoutPreviewScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.info_outline_rounded, color: AppColors.warning, size: 18),
+                  const Icon(
+                    Icons.info_outline_rounded,
+                    color: AppColors.warning,
+                    size: 18,
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       'When triggered, the phone shows a completely black/dead screen to deceive the thief.',
-                      style: AppTextStyles.bodySmall.copyWith(color: AppColors.warning),
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.warning,
+                      ),
                     ),
                   ),
                 ],
@@ -71,22 +97,46 @@ class _BlackoutPreviewScreenState extends State<BlackoutPreviewScreen> {
                   color: Colors.black,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: AppColors.border),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.5), blurRadius: 20)],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 20,
+                    ),
+                  ],
                 ),
                 child: Stack(
                   children: [
                     // Fake status bar
                     Positioned(
-                      top: 12, left: 16, right: 16,
+                      top: 12,
+                      left: 16,
+                      right: 16,
                       child: Row(
                         children: [
-                          Text('9:41', style: AppTextStyles.bodySmall.copyWith(color: Colors.black26)),
+                          Text(
+                            '9:41',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: Colors.black26,
+                            ),
+                          ),
                           const Spacer(),
-                          const Icon(Icons.signal_cellular_alt, color: Colors.black26, size: 14),
+                          const Icon(
+                            Icons.signal_cellular_alt,
+                            color: Colors.black26,
+                            size: 14,
+                          ),
                           const SizedBox(width: 4),
-                          const Icon(Icons.wifi, color: Colors.black26, size: 14),
+                          const Icon(
+                            Icons.wifi,
+                            color: Colors.black26,
+                            size: 14,
+                          ),
                           const SizedBox(width: 4),
-                          const Icon(Icons.battery_full, color: Colors.black26, size: 14),
+                          const Icon(
+                            Icons.battery_full,
+                            color: Colors.black26,
+                            size: 14,
+                          ),
                         ],
                       ),
                     ),
@@ -94,10 +144,18 @@ class _BlackoutPreviewScreenState extends State<BlackoutPreviewScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.touch_app_outlined, color: Colors.white24, size: 28),
+                          const Icon(
+                            Icons.touch_app_outlined,
+                            color: Colors.white24,
+                            size: 28,
+                          ),
                           const SizedBox(height: 8),
-                          Text('Tap to preview full blackout',
-                              style: AppTextStyles.bodySmall.copyWith(color: Colors.white24)),
+                          Text(
+                            'Tap to preview full blackout',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: Colors.white24,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -110,17 +168,33 @@ class _BlackoutPreviewScreenState extends State<BlackoutPreviewScreen> {
               child: Row(
                 children: [
                   Container(
-                    width: 44, height: 44,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceHighest, borderRadius: BorderRadius.circular(12)),
-                    child: const Icon(Icons.brightness_1_rounded, color: AppColors.textSecondary, size: 22),
+                      color: AppColors.surfaceHighest,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.brightness_1_rounded,
+                      color: AppColors.textSecondary,
+                      size: 22,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Activate on Trigger', style: AppTextStyles.titleLarge),
-                      Text('Show blackout when trigger fires', style: AppTextStyles.bodySmall),
-                    ]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Activate on Trigger',
+                          style: AppTextStyles.titleLarge,
+                        ),
+                        Text(
+                          'Show blackout when trigger fires',
+                          style: AppTextStyles.bodySmall,
+                        ),
+                      ],
+                    ),
                   ),
                   Switch(
                     value: _enabledOnTrigger,
@@ -129,7 +203,9 @@ class _BlackoutPreviewScreenState extends State<BlackoutPreviewScreen> {
                     activeColor: Colors.white,
                     inactiveThumbColor: AppColors.textTertiary,
                     inactiveTrackColor: AppColors.surfaceHighest,
-                    trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
+                    trackOutlineColor: WidgetStateProperty.all(
+                      Colors.transparent,
+                    ),
                   ),
                 ],
               ),
@@ -139,7 +215,9 @@ class _BlackoutPreviewScreenState extends State<BlackoutPreviewScreen> {
               label: 'Preview Full Blackout',
               icon: Icons.visibility_off_rounded,
               onPressed: () => setState(() => _showingBlackout = true),
-              gradient: const LinearGradient(colors: [Color(0xFF1A1A1A), Color(0xFF000000)]),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF1A1A1A), Color(0xFF000000)],
+              ),
               glowColor: Colors.white24,
             ),
             const SizedBox(height: 24),
@@ -157,7 +235,7 @@ class _BlackoutOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onExit,
+      onDoubleTap: onExit,
       child: const Scaffold(
         backgroundColor: Colors.black,
         body: Center(

@@ -5,7 +5,6 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/widgets/pulse_indicator.dart';
-import '../../navigation/bottom_nav_shell.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -58,10 +57,10 @@ class _SplashScreenState extends State<SplashScreen> {
               const SizedBox(height: 32),
               // App name
               Text(
-                AppStrings.appName,
-                style: AppTextStyles.displayLarge,
-                textAlign: TextAlign.center,
-              )
+                    AppStrings.appName,
+                    style: AppTextStyles.displayLarge,
+                    textAlign: TextAlign.center,
+                  )
                   .animate()
                   .fadeIn(delay: 400.ms, duration: 600.ms)
                   .slideY(begin: 0.3, end: 0, delay: 400.ms, duration: 600.ms),
@@ -72,25 +71,22 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: AppColors.primary.withOpacity(0.8),
                 ),
                 textAlign: TextAlign.center,
-              )
-                  .animate()
-                  .fadeIn(delay: 600.ms, duration: 600.ms),
+              ).animate().fadeIn(delay: 600.ms, duration: 600.ms),
               const Spacer(flex: 2),
               // Loading indicator
               Column(
                 children: [
-                  _LoadingBar()
-                      .animate()
-                      .fadeIn(delay: 800.ms, duration: 400.ms),
+                  _LoadingBar().animate().fadeIn(
+                    delay: 800.ms,
+                    duration: 400.ms,
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     'Initializing Security Systems...',
                     style: AppTextStyles.bodySmall.copyWith(
                       color: AppColors.success.withOpacity(0.7),
                     ),
-                  )
-                      .animate()
-                      .fadeIn(delay: 900.ms, duration: 400.ms),
+                  ).animate().fadeIn(delay: 900.ms, duration: 400.ms),
                   const SizedBox(height: 40),
                   Text(
                     AppStrings.version,

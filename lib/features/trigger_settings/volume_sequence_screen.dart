@@ -4,7 +4,6 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/glow_button.dart';
-import '../../core/widgets/glow_button.dart';
 
 class VolumeSequenceScreen extends StatefulWidget {
   const VolumeSequenceScreen({super.key});
@@ -35,13 +34,21 @@ class _VolumeSequenceScreenState extends State<VolumeSequenceScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.background, elevation: 0,
+        backgroundColor: AppColors.background,
+        elevation: 0,
         leading: IconButton(
           icon: Container(
             padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.border)),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: AppColors.textPrimary),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 16,
+              color: AppColors.textPrimary,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -52,8 +59,10 @@ class _VolumeSequenceScreenState extends State<VolumeSequenceScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Build your secret trigger sequence (max 5 presses)',
-                style: AppTextStyles.bodyLarge),
+            Text(
+              'Build your secret trigger sequence (max 5 presses)',
+              style: AppTextStyles.bodyLarge,
+            ),
             const SizedBox(height: 24),
             // Sequence display
             GlassCard(
@@ -64,16 +73,23 @@ class _VolumeSequenceScreenState extends State<VolumeSequenceScreen> {
                     children: [
                       Text('Your Sequence', style: AppTextStyles.titleLarge),
                       const Spacer(),
-                      Text('${_sequence.length}/5',
-                          style: AppTextStyles.labelMedium.copyWith(
-                              color: _sequence.length == 5 ? AppColors.warning : AppColors.textTertiary)),
+                      Text(
+                        '${_sequence.length}/5',
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: _sequence.length == 5
+                              ? AppColors.warning
+                              : AppColors.textTertiary,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   if (_sequence.isEmpty)
                     Center(
-                      child: Text('Tap buttons below to build sequence',
-                          style: AppTextStyles.bodySmall),
+                      child: Text(
+                        'Tap buttons below to build sequence',
+                        style: AppTextStyles.bodySmall,
+                      ),
                     )
                   else
                     Wrap(
@@ -83,29 +99,42 @@ class _VolumeSequenceScreenState extends State<VolumeSequenceScreen> {
                         final isUp = e.value;
                         return AnimatedContainer(
                           duration: 200.ms,
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
                             color: isUp
                                 ? AppColors.success.withOpacity(0.15)
                                 : AppColors.primary.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                                color: isUp
-                                    ? AppColors.success.withOpacity(0.4)
-                                    : AppColors.primary.withOpacity(0.4)),
+                              color: isUp
+                                  ? AppColors.success.withOpacity(0.4)
+                                  : AppColors.primary.withOpacity(0.4),
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                isUp ? Icons.volume_up_rounded : Icons.volume_down_rounded,
-                                color: isUp ? AppColors.success : AppColors.primary,
+                                isUp
+                                    ? Icons.volume_up_rounded
+                                    : Icons.volume_down_rounded,
+                                color: isUp
+                                    ? AppColors.success
+                                    : AppColors.primary,
                                 size: 16,
                               ),
                               const SizedBox(width: 4),
-                              Text(isUp ? 'Vol ▲' : 'Vol ▼',
-                                  style: AppTextStyles.labelSmall.copyWith(
-                                      color: isUp ? AppColors.success : AppColors.primary)),
+                              Text(
+                                isUp ? 'Vol ▲' : 'Vol ▼',
+                                style: AppTextStyles.labelSmall.copyWith(
+                                  color: isUp
+                                      ? AppColors.success
+                                      : AppColors.primary,
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -127,14 +156,25 @@ class _VolumeSequenceScreenState extends State<VolumeSequenceScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.success.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.success.withOpacity(0.4)),
+                        border: Border.all(
+                          color: AppColors.success.withOpacity(0.4),
+                        ),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.volume_up_rounded, color: AppColors.success, size: 28),
+                          const Icon(
+                            Icons.volume_up_rounded,
+                            color: AppColors.success,
+                            size: 28,
+                          ),
                           const SizedBox(height: 4),
-                          Text('Volume Up', style: AppTextStyles.labelMedium.copyWith(color: AppColors.success)),
+                          Text(
+                            'Volume Up',
+                            style: AppTextStyles.labelMedium.copyWith(
+                              color: AppColors.success,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -149,14 +189,25 @@ class _VolumeSequenceScreenState extends State<VolumeSequenceScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.primary.withOpacity(0.4)),
+                        border: Border.all(
+                          color: AppColors.primary.withOpacity(0.4),
+                        ),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.volume_down_rounded, color: AppColors.primary, size: 28),
+                          const Icon(
+                            Icons.volume_down_rounded,
+                            color: AppColors.primary,
+                            size: 28,
+                          ),
                           const SizedBox(height: 4),
-                          Text('Volume Down', style: AppTextStyles.labelMedium.copyWith(color: AppColors.primary)),
+                          Text(
+                            'Volume Down',
+                            style: AppTextStyles.labelMedium.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -176,7 +227,9 @@ class _VolumeSequenceScreenState extends State<VolumeSequenceScreen> {
             GlowButton(
               label: 'Save Sequence',
               icon: Icons.check_rounded,
-              onPressed: _sequence.isNotEmpty ? () => Navigator.pop(context) : null,
+              onPressed: _sequence.isNotEmpty
+                  ? () => Navigator.pop(context)
+                  : null,
               gradient: AppColors.successGradient,
               glowColor: AppColors.success,
             ),

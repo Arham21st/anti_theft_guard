@@ -77,8 +77,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    const Icon(Icons.notifications_outlined,
-                        color: AppColors.textSecondary, size: 20),
+                    const Icon(
+                      Icons.notifications_outlined,
+                      color: AppColors.textSecondary,
+                      size: 20,
+                    ),
                     Positioned(
                       top: 8,
                       right: 8,
@@ -107,9 +110,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          ShieldPulse(isActive: _isProtected, size: 90)
-              .animate()
-              .fadeIn(duration: 600.ms),
+          ShieldPulse(
+            isActive: _isProtected,
+            size: 90,
+          ).animate().fadeIn(duration: 600.ms),
           const SizedBox(height: 16),
           LargeStatusChip(isActive: _isProtected),
           const SizedBox(height: 12),
@@ -131,19 +135,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.power_settings_new_rounded,
-                    color: AppColors.textSecondary, size: 18),
+                const Icon(
+                  Icons.power_settings_new_rounded,
+                  color: AppColors.textSecondary,
+                  size: 18,
+                ),
                 const SizedBox(width: 10),
                 Text('Anti-Theft Mode', style: AppTextStyles.titleMedium),
                 const Spacer(),
                 Switch(
                   value: _isProtected,
                   onChanged: (v) => setState(() => _isProtected = v),
-                  activeColor: Colors.white,
+                  activeThumbColor: Colors.white,
                   activeTrackColor: AppColors.success,
                   inactiveThumbColor: AppColors.textTertiary,
                   inactiveTrackColor: AppColors.surfaceHighest,
-                  trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
+                  trackOutlineColor: WidgetStateProperty.all(
+                    Colors.transparent,
+                  ),
                 ),
               ],
             ),
@@ -192,22 +201,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildFeatureGrid() {
     final features = [
-      _FeatureData(Icons.touch_app_rounded, 'Trigger', 'Power × 3',
-          AppColors.primary, AppRoutes.triggerSettings),
-      _FeatureData(Icons.remove_red_eye_rounded, 'Stealth Mode', 'Active',
-          AppColors.info, AppRoutes.stealthMode),
-      _FeatureData(Icons.restart_alt_rounded, 'Auto-Start', 'Enabled',
-          AppColors.success, AppRoutes.autoStart),
-      _FeatureData(Icons.camera_front_rounded, 'Front Camera', '3 captured',
-          AppColors.secondary, AppRoutes.frontCamera),
-      _FeatureData(Icons.camera_rear_rounded, 'Back Camera', 'Ready',
-          AppColors.warning, AppRoutes.backCamera),
-      _FeatureData(Icons.fiber_manual_record_rounded, 'Video Record', 'Idle',
-          AppColors.danger, AppRoutes.videoRecording),
-      _FeatureData(Icons.battery_full_rounded, 'Battery', '72%',
-          AppColors.success, AppRoutes.batteryMonitor),
-      _FeatureData(Icons.sms_rounded, 'SMS Backup', 'Ready',
-          AppColors.info, AppRoutes.emergencySms),
+      _FeatureData(
+        Icons.touch_app_rounded,
+        'Trigger',
+        'Power × 3',
+        AppColors.primary,
+        AppRoutes.triggerSettings,
+      ),
+      _FeatureData(
+        Icons.remove_red_eye_rounded,
+        'Stealth Mode',
+        'Active',
+        AppColors.info,
+        AppRoutes.stealthMode,
+      ),
+      _FeatureData(
+        Icons.restart_alt_rounded,
+        'Auto-Start',
+        'Enabled',
+        AppColors.success,
+        AppRoutes.autoStart,
+      ),
+      _FeatureData(
+        Icons.camera_front_rounded,
+        'Front Camera',
+        '3 captured',
+        AppColors.secondary,
+        AppRoutes.frontCamera,
+      ),
+      _FeatureData(
+        Icons.camera_rear_rounded,
+        'Back Camera',
+        'Ready',
+        AppColors.warning,
+        AppRoutes.backCamera,
+      ),
+      _FeatureData(
+        Icons.fiber_manual_record_rounded,
+        'Video Record',
+        'Idle',
+        AppColors.danger,
+        AppRoutes.videoRecording,
+      ),
+      _FeatureData(
+        Icons.battery_full_rounded,
+        'Battery',
+        '72%',
+        AppColors.success,
+        AppRoutes.batteryMonitor,
+      ),
+      _FeatureData(
+        Icons.sms_rounded,
+        'SMS Backup',
+        'Ready',
+        AppColors.info,
+        AppRoutes.emergencySms,
+      ),
     ];
     return GridView.builder(
       shrinkWrap: true,
@@ -221,7 +270,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       itemCount: features.length,
       itemBuilder: (_, i) => _FeatureGridCard(data: features[i])
           .animate()
-          .fadeIn(delay: Duration(milliseconds: 100 * i), duration: 400.ms)
+          .fadeIn(
+            delay: Duration(milliseconds: 100 * i),
+            duration: 400.ms,
+          )
           .slideY(begin: 0.2, end: 0),
     );
   }
@@ -239,7 +291,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               gradient: AppColors.warningGradient,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.sms_outlined, color: Colors.white, size: 22),
+            child: const Icon(
+              Icons.sms_outlined,
+              color: Colors.white,
+              size: 22,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -285,10 +341,14 @@ class _StatChip extends StatelessWidget {
           children: [
             Icon(icon, color: color, size: 18),
             const SizedBox(height: 4),
-            Text(label,
-                style: AppTextStyles.labelLarge.copyWith(
-                    color: color, fontSize: 11),
-                overflow: TextOverflow.ellipsis),
+            Text(
+              label,
+              style: AppTextStyles.labelLarge.copyWith(
+                color: color,
+                fontSize: 11,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
             Text(sublabel, style: AppTextStyles.labelSmall),
           ],
         ),
@@ -304,7 +364,12 @@ class _FeatureData {
   final Color color;
   final String route;
   const _FeatureData(
-      this.icon, this.title, this.subtitle, this.color, this.route);
+    this.icon,
+    this.title,
+    this.subtitle,
+    this.color,
+    this.route,
+  );
 }
 
 class _FeatureGridCard extends StatelessWidget {
@@ -342,9 +407,11 @@ class _FeatureGridCard extends StatelessWidget {
               child: Icon(data.icon, color: data.color, size: 20),
             ),
             const Spacer(),
-            Text(data.title,
-                style: AppTextStyles.titleMedium,
-                overflow: TextOverflow.ellipsis),
+            Text(
+              data.title,
+              style: AppTextStyles.titleMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
             const SizedBox(height: 2),
             Text(data.subtitle, style: AppTextStyles.bodySmall),
           ],

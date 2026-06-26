@@ -5,7 +5,9 @@ import 'core/config/app_env.dart';
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
 import 'features/splash/splash_screen.dart';
-import 'features/onboarding/onboarding_screen.dart';
+import 'features/auth/register_screen.dart';
+import 'features/auth/pin_setup_screen.dart';
+import 'features/auth/pin_lock_screen.dart';
 import 'navigation/bottom_nav_shell.dart';
 import 'features/trigger_settings/trigger_settings_screen.dart';
 import 'features/trigger_settings/password_trigger_screen.dart';
@@ -49,7 +51,9 @@ class AntiTheftApp extends StatelessWidget {
       routes: {
         AppRoutes.splash: (_) => const SplashScreen(),
         AppRoutes.admin: (_) => const AdminShell(),
-        AppRoutes.onboarding: (_) => const OnboardingScreen(),
+        AppRoutes.register: (_) => const RegisterScreen(),
+        AppRoutes.pinSetup: (_) => const PinSetupScreen(),
+        AppRoutes.pinLock: (_) => const PinLockScreen(),
         AppRoutes.home: (_) => const BottomNavShell(),
         AppRoutes.triggerSettings: (_) => const TriggerSettingsScreen(),
         AppRoutes.passwordTrigger: (_) => const PasswordTriggerScreen(),

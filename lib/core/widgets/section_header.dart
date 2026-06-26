@@ -30,12 +30,15 @@ class SectionHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Text(title, style: AppTextStyles.labelLarge.copyWith(
-            letterSpacing: 1.2,
-            color: AppColors.textSecondary,
-          )),
+          Text(
+            title,
+            style: AppTextStyles.labelLarge.copyWith(
+              letterSpacing: 1.2,
+              color: AppColors.textSecondary,
+            ),
+          ),
           const Spacer(),
-          if (trailing != null) trailing!,
+          ?trailing,
         ],
       ),
     );
@@ -60,7 +63,7 @@ class AppToggle extends StatelessWidget {
     return Switch(
       value: value,
       onChanged: onChanged,
-      activeColor: Colors.white,
+      activeThumbColor: Colors.white,
       activeTrackColor: activeColor,
       inactiveThumbColor: AppColors.textTertiary,
       inactiveTrackColor: AppColors.surfaceHighest,
@@ -92,7 +95,8 @@ class FeatureAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: AppColors.background,
       elevation: 0,
-      leading: leading ??
+      leading:
+          leading ??
           IconButton(
             icon: Container(
               padding: const EdgeInsets.all(6),
@@ -101,8 +105,11 @@ class FeatureAppBar extends StatelessWidget implements PreferredSizeWidget {
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: AppColors.border),
               ),
-              child: const Icon(Icons.arrow_back_ios_new_rounded,
-                  size: 16, color: AppColors.textPrimary),
+              child: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 16,
+                color: AppColors.textPrimary,
+              ),
             ),
             onPressed: () => Navigator.pop(context),
           ),
@@ -110,8 +117,7 @@ class FeatureAppBar extends StatelessWidget implements PreferredSizeWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title, style: AppTextStyles.headlineMedium),
-          if (subtitle != null)
-            Text(subtitle!, style: AppTextStyles.bodySmall),
+          if (subtitle != null) Text(subtitle!, style: AppTextStyles.bodySmall),
         ],
       ),
       actions: actions,

@@ -1,11 +1,11 @@
 {
-    "name": "Anti-Theft Guard Admin",
-    "short_name": "Guard Admin",
+    "name": "Anti-Theft Guard",
+    "short_name": "Anti-Theft",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0A0A0F",
-    "theme_color": "#0EA5E9",
-    "description": "Anti-Theft Guard Admin dashboard.",
+    "theme_color": "#FF3131",
+    "description": "Anti-Theft Guard — secure your device and view its data from anywhere.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

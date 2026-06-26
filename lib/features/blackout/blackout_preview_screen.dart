@@ -200,7 +200,7 @@ class _BlackoutPreviewScreenState extends State<BlackoutPreviewScreen> {
                     value: _enabledOnTrigger,
                     onChanged: (v) => setState(() => _enabledOnTrigger = v),
                     activeTrackColor: AppColors.primary,
-                    activeColor: Colors.white,
+                    activeThumbColor: Colors.white,
                     inactiveThumbColor: AppColors.textTertiary,
                     inactiveTrackColor: AppColors.surfaceHighest,
                     trackOutlineColor: WidgetStateProperty.all(

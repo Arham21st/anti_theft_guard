@@ -75,7 +75,7 @@ class _TriggerSettingsScreenState extends State<TriggerSettingsScreen> {
             Expanded(
               child: ListView.separated(
                 itemCount: _options.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                separatorBuilder: (_, _) => const SizedBox(height: 12),
                 itemBuilder: (_, i) {
                   final opt = _options[i];
                   final isSelected = _selected == i;

@@ -32,8 +32,11 @@ class _BatteryMonitorScreenState extends State<BatteryMonitorScreen> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.border),
             ),
-            child: const Icon(Icons.arrow_back_ios_new_rounded,
-                size: 16, color: AppColors.textPrimary),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 16,
+              color: AppColors.textPrimary,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -56,15 +59,23 @@ class _BatteryMonitorScreenState extends State<BatteryMonitorScreen> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.warning_amber_rounded,
-                              color: AppColors.warning, size: 20),
+                          const Icon(
+                            Icons.warning_amber_rounded,
+                            color: AppColors.warning,
+                            size: 20,
+                          ),
                           const SizedBox(width: 10),
-                          Text('Low Battery Alert',
-                              style: AppTextStyles.titleMedium),
+                          Text(
+                            'Low Battery Alert',
+                            style: AppTextStyles.titleMedium,
+                          ),
                           const Spacer(),
-                          Text('${_alertThreshold.toInt()}%',
-                              style: AppTextStyles.labelLarge
-                                  .copyWith(color: AppColors.warning)),
+                          Text(
+                            '${_alertThreshold.toInt()}%',
+                            style: AppTextStyles.labelLarge.copyWith(
+                              color: AppColors.warning,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 16),
@@ -98,18 +109,25 @@ class _BatteryMonitorScreenState extends State<BatteryMonitorScreen> {
                           color: AppColors.warning.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.sms_rounded,
-                            color: AppColors.warning, size: 22),
+                        child: const Icon(
+                          Icons.sms_rounded,
+                          color: AppColors.warning,
+                          size: 22,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Auto-SMS on Low Battery',
-                                style: AppTextStyles.titleMedium),
-                            Text('Send location when battery is critical',
-                                style: AppTextStyles.bodySmall),
+                            Text(
+                              'Auto-SMS on Low Battery',
+                              style: AppTextStyles.titleMedium,
+                            ),
+                            Text(
+                              'Send location when battery is critical',
+                              style: AppTextStyles.bodySmall,
+                            ),
                           ],
                         ),
                       ),
@@ -117,11 +135,12 @@ class _BatteryMonitorScreenState extends State<BatteryMonitorScreen> {
                         value: _autoSmsOnLow,
                         onChanged: (v) => setState(() => _autoSmsOnLow = v),
                         activeTrackColor: AppColors.warning,
-                        activeColor: Colors.white,
+                        activeThumbColor: Colors.white,
                         inactiveThumbColor: AppColors.textTertiary,
                         inactiveTrackColor: AppColors.surfaceHighest,
-                        trackOutlineColor:
-                            WidgetStateProperty.all(Colors.transparent),
+                        trackOutlineColor: WidgetStateProperty.all(
+                          Colors.transparent,
+                        ),
                       ),
                     ],
                   ),
@@ -167,21 +186,29 @@ class _BatteryMonitorScreenState extends State<BatteryMonitorScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.battery_charging_full_rounded,
-                      color: AppColors.success, size: 32),
+                  const Icon(
+                    Icons.battery_charging_full_rounded,
+                    color: AppColors.success,
+                    size: 32,
+                  ),
                   const SizedBox(height: 8),
                   Text('72%', style: AppTextStyles.statNumber),
                   const SizedBox(height: 4),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.success.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text('Charging',
-                        style: AppTextStyles.labelSmall
-                            .copyWith(color: AppColors.success)),
+                    child: Text(
+                      'Charging',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: AppColors.success,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -204,11 +231,7 @@ class _BatteryMonitorScreenState extends State<BatteryMonitorScreen> {
         ),
         const SizedBox(width: 10),
         Expanded(
-          child: _StatBox(
-            title: 'Temp',
-            value: '34°C',
-            color: AppColors.info,
-          ),
+          child: _StatBox(title: 'Temp', value: '34°C', color: AppColors.info),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -246,7 +269,11 @@ class _BatteryMonitorScreenState extends State<BatteryMonitorScreen> {
 }
 
 class _StatBox extends StatelessWidget {
-  const _StatBox({required this.title, required this.value, required this.color});
+  const _StatBox({
+    required this.title,
+    required this.value,
+    required this.color,
+  });
   final String title;
   final String value;
   final Color color;
@@ -322,7 +349,12 @@ class _BatteryGaugePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius), startAngle, sweepAngle, false, bgPaint);
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      bgPaint,
+    );
 
     final progressPaint = Paint()
       ..color = color
@@ -331,7 +363,12 @@ class _BatteryGaugePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     canvas.drawArc(
-        Rect.fromCircle(center: center, radius: radius), startAngle, sweepAngle * progress, false, progressPaint);
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,
+      sweepAngle * progress,
+      false,
+      progressPaint,
+    );
 
     // Draw little tick marks
     final tickPaint = Paint()
@@ -342,8 +379,14 @@ class _BatteryGaugePainter extends CustomPainter {
       final innerRad = radius - 18;
       final outerRad = radius - 12;
       canvas.drawLine(
-        Offset(center.dx + innerRad * math.cos(angle), center.dy + innerRad * math.sin(angle)),
-        Offset(center.dx + outerRad * math.cos(angle), center.dy + outerRad * math.sin(angle)),
+        Offset(
+          center.dx + innerRad * math.cos(angle),
+          center.dy + innerRad * math.sin(angle),
+        ),
+        Offset(
+          center.dx + outerRad * math.cos(angle),
+          center.dy + outerRad * math.sin(angle),
+        ),
         tickPaint,
       );
     }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../auth/user_role.dart';
+import '../auth/web_auth_state.dart';
 import '../data/admin_mock_data.dart';
 import '../models/admin_device.dart';
 import '../models/admin_event.dart';
@@ -61,7 +63,12 @@ class _AdminLogsPageState extends State<AdminLogsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final role = WebAuthProvider.of(context).role;
+    final isUser = role == UserRole.user;
+
     final events = AdminMockData.events.where((event) {
+      // End-users only see events for their own device.
+      if (isUser && event.deviceId != widget.selectedDevice.id) return false;
       if (_filter == 'All') return true;
       if (_filter == 'Captures') return event.type == AdminEventType.capture;
       if (_filter == 'Location') return event.type == AdminEventType.location;
@@ -74,13 +81,14 @@ class _AdminLogsPageState extends State<AdminLogsPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AdminPageHeader(
+        AdminPageHeader(
           title: 'Alerts & Logs',
-          subtitle:
-              'Chronological security activity across all static demo devices.',
+          subtitle: isUser
+              ? 'Security activity for your device.'
+              : 'Chronological security activity across all static demo devices.',
           actions: [
-            AdminSearchField(hint: 'Search events'),
-            AdminIconButton(
+            const AdminSearchField(hint: 'Search events'),
+            const AdminIconButton(
               icon: Icons.file_download_outlined,
               tooltip: 'Export event logs',
             ),
@@ -115,34 +123,44 @@ class _AdminLogsPageState extends State<AdminLogsPage> {
           header: 'Event stream',
           padding: const EdgeInsets.only(top: 16),
           child: AdminDataTable(
-            columns: const [
-              DataColumn(label: Text('Event')),
-              DataColumn(label: Text('Description')),
-              DataColumn(label: Text('Device')),
-              DataColumn(label: Text('Severity')),
-              DataColumn(label: Text('Time')),
-            ],
+            columns: isUser
+                ? const [
+                    DataColumn(label: Text('Event')),
+                    DataColumn(label: Text('Description')),
+                    DataColumn(label: Text('Severity')),
+                    DataColumn(label: Text('Time')),
+                  ]
+                : const [
+                    DataColumn(label: Text('Event')),
+                    DataColumn(label: Text('Description')),
+                    DataColumn(label: Text('Device')),
+                    DataColumn(label: Text('Severity')),
+                    DataColumn(label: Text('Time')),
+                  ],
             rows: events.map((event) {
-              final device = _deviceById(event.deviceId);
               final color = _severityColor(event.severity);
-              return DataRow(
-                cells: [
-                  DataCell(
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(_eventIcon(event.type), color: color, size: 18),
-                        const SizedBox(width: 8),
-                        Text(event.title),
-                      ],
-                    ),
+              // Users get a 4-cell row (no Device column); admins get 5 cells.
+              final baseCells = <DataCell>[
+                DataCell(
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(_eventIcon(event.type), color: color, size: 18),
+                      const SizedBox(width: 8),
+                      Text(event.title),
+                    ],
                   ),
-                  DataCell(Text(event.description)),
-                  DataCell(Text(device.deviceName)),
-                  DataCell(AdminStatusBadge.severity(severity: event.severity)),
-                  DataCell(Text(event.time)),
-                ],
-              );
+                ),
+                DataCell(Text(event.description)),
+              ];
+              final tailCells = <DataCell>[
+                DataCell(AdminStatusBadge.severity(severity: event.severity)),
+                DataCell(Text(event.time)),
+              ];
+              final cells = isUser
+                  ? [...baseCells, ...tailCells]
+                  : [...baseCells, DataCell(Text(_deviceById(event.deviceId).deviceName)), ...tailCells];
+              return DataRow(cells: cells);
             }).toList(),
           ),
         ),

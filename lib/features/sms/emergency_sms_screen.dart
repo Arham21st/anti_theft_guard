@@ -38,8 +38,11 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.border),
             ),
-            child: const Icon(Icons.arrow_back_ios_new_rounded,
-                size: 16, color: AppColors.textPrimary),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 16,
+              color: AppColors.textPrimary,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -67,18 +70,27 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
                 GlassCard(
                   child: Column(
                     children: [
-                      _buildToggleRow('GPS Location Link',
-                          'Google Maps URL of current location', _sendLocation,
-                          (v) => setState(() => _sendLocation = v)),
+                      _buildToggleRow(
+                        'GPS Location Link',
+                        'Google Maps URL of current location',
+                        _sendLocation,
+                        (v) => setState(() => _sendLocation = v),
+                      ),
                       Divider(color: AppColors.border, height: 24),
-                      _buildToggleRow('Battery Status',
-                          'Current battery % and state', _sendBattery,
-                          (v) => setState(() => _sendBattery = v)),
+                      _buildToggleRow(
+                        'Battery Status',
+                        'Current battery % and state',
+                        _sendBattery,
+                        (v) => setState(() => _sendBattery = v),
+                      ),
                       Divider(color: AppColors.border, height: 24),
-                      _buildToggleRow('Remote Wipe Code',
-                          'Include instructions to wipe device', _sendWipeCode,
-                          (v) => setState(() => _sendWipeCode = v),
-                          isDanger: true),
+                      _buildToggleRow(
+                        'Remote Wipe Code',
+                        'Include instructions to wipe device',
+                        _sendWipeCode,
+                        (v) => setState(() => _sendWipeCode = v),
+                        isDanger: true,
+                      ),
                     ],
                   ),
                 ).animate().fadeIn(delay: 340.ms),
@@ -107,13 +119,17 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
       child: Row(
         children: [
           Container(
-            width: 50, height: 50,
+            width: 50,
+            height: 50,
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.15),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(Icons.emergency_share_rounded,
-                color: AppColors.primary, size: 26),
+            child: const Icon(
+              Icons.emergency_share_rounded,
+              color: AppColors.primary,
+              size: 26,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -148,8 +164,9 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
                 backgroundColor: AppColors.surfaceHighest,
                 child: Text(
                   contact.name.substring(0, 1),
-                  style: AppTextStyles.titleLarge
-                      .copyWith(color: AppColors.textSecondary),
+                  style: AppTextStyles.titleLarge.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ),
               const SizedBox(width: 14),
@@ -166,7 +183,7 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
                 value: contact.enabled,
                 onChanged: (v) => setState(() => contact.enabled = v),
                 activeTrackColor: AppColors.success,
-                activeColor: Colors.white,
+                activeThumbColor: Colors.white,
                 inactiveThumbColor: AppColors.textTertiary,
                 inactiveTrackColor: AppColors.surfaceHighest,
                 trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
@@ -179,8 +196,12 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
   }
 
   Widget _buildToggleRow(
-      String title, String sub, bool val, ValueChanged<bool> onChange,
-      {bool isDanger = false}) {
+    String title,
+    String sub,
+    bool val,
+    ValueChanged<bool> onChange, {
+    bool isDanger = false,
+  }) {
     final color = isDanger ? AppColors.danger : AppColors.info;
     return Row(
       children: [
@@ -197,7 +218,7 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
           value: val,
           onChanged: onChange,
           activeTrackColor: color,
-          activeColor: Colors.white,
+          activeThumbColor: Colors.white,
           inactiveThumbColor: AppColors.textTertiary,
           inactiveTrackColor: AppColors.surfaceHighest,
           trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
@@ -222,8 +243,10 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('⚠️ ANTI-THEFT ALERT',
-              style: AppTextStyles.labelLarge.copyWith(color: AppColors.primary)),
+          Text(
+            '⚠️ ANTI-THEFT ALERT',
+            style: AppTextStyles.labelLarge.copyWith(color: AppColors.primary),
+          ),
           const SizedBox(height: 8),
           Text(
             'My phone was marked stolen.\n\n'
@@ -285,8 +308,10 @@ class OutlineButton extends StatelessWidget {
                 Icon(icon, color: textColor, size: 18),
                 const SizedBox(width: 8),
               ],
-              Text(label,
-                  style: AppTextStyles.labelLarge.copyWith(color: textColor)),
+              Text(
+                label,
+                style: AppTextStyles.labelLarge.copyWith(color: textColor),
+              ),
             ],
           ),
         ),

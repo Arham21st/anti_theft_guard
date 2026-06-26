@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+
+import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../core/constants/app_constants.dart';
+import 'local_auth_repository.dart';
 
-class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+/// Set + confirm a 4-digit PIN. The numpad UX is migrated from the legacy
+/// onboarding screen; on confirmation the PIN is persisted via [LocalAuthRepository]
+/// before navigating to Home.
+class PinSetupScreen extends StatefulWidget {
+  const PinSetupScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  State<PinSetupScreen> createState() => _PinSetupScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _PinSetupScreenState extends State<PinSetupScreen> {
   final List<String> _pin = [];
   bool _isConfirming = false;
   List<String> _firstPin = [];
   bool _pinError = false;
+  String? _errorMessage;
+  bool _isSaving = false;
 
   void _onKeyTap(String key) {
     if (_pin.length >= 4) return;
     setState(() {
       _pin.add(key);
       _pinError = false;
+      _errorMessage = null;
     });
     if (_pin.length == 4) {
       Future.delayed(200.ms, _handlePinComplete);
@@ -33,7 +41,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     setState(() => _pin.removeLast());
   }
 
-  void _handlePinComplete() {
+  Future<void> _handlePinComplete() async {
     if (!_isConfirming) {
       setState(() {
         _firstPin = List.from(_pin);
@@ -42,11 +50,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       });
     } else {
       if (_pin.join() == _firstPin.join()) {
+        // PINs match — persist, then navigate.
+        setState(() => _isSaving = true);
+        await LocalAuthRepository.instance.setPin(_firstPin.join());
+        if (!mounted) return;
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       } else {
         setState(() {
           _pin.clear();
           _pinError = true;
+          _errorMessage = 'PINs do not match. Try again.';
         });
       }
     }
@@ -69,15 +82,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.12),
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.primary.withOpacity(0.3),
-                      ),
+                      border: Border.all(color: AppColors.primary.withOpacity(0.3)),
                     ),
-                    child: const Icon(
-                      Icons.lock_rounded,
-                      color: AppColors.primary,
-                      size: 28,
-                    ),
+                    child: const Icon(Icons.lock_rounded,
+                        color: AppColors.primary, size: 28),
                   )
                   .animate()
                   .fadeIn(duration: 500.ms)
@@ -92,68 +100,68 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Text(
                 _isConfirming
                     ? 'Enter the same PIN again to confirm'
-                    : 'Create a 4-digit PIN to protect your app',
+                    : 'Create a 4-digit PIN to quickly unlock your app',
                 style: AppTextStyles.bodyMedium,
                 textAlign: TextAlign.center,
               ).animate().fadeIn(delay: 200.ms, duration: 400.ms),
-              const SizedBox(height: 40),
+              const SizedBox(height: 32),
               // PIN Dots
-              AnimatedSwitcher(
-                duration: 300.ms,
-                child: Row(
-                  key: ValueKey(_isConfirming),
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(4, (i) {
-                    final filled = i < _pin.length;
-                    return AnimatedContainer(
-                      duration: 200.ms,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      width: 18,
-                      height: 18,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: filled
-                            ? (_pinError ? AppColors.danger : AppColors.primary)
-                            : Colors.transparent,
-                        border: Border.all(
-                          color: _pinError
-                              ? AppColors.danger
-                              : (filled ? AppColors.primary : AppColors.border),
-                          width: 2,
-                        ),
-                        boxShadow: filled
-                            ? [
-                                BoxShadow(
-                                  color:
-                                      (_pinError
-                                              ? AppColors.danger
-                                              : AppColors.primary)
-                                          .withOpacity(0.4),
-                                  blurRadius: 8,
-                                ),
-                              ]
-                            : null,
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              if (_pinError) ...[
-                const SizedBox(height: 12),
+              _buildPinDots(),
+              if (_pinError || _isSaving) ...[
+                const SizedBox(height: 16),
                 Text(
-                  'PINs do not match. Try again.',
+                  _isSaving ? 'Saving...' : (_errorMessage ?? 'PINs do not match.'),
                   style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.danger,
+                    color: _isSaving ? AppColors.success : AppColors.danger,
                   ),
                 ).animate().shakeX(amount: 4, duration: 400.ms),
               ],
               const Spacer(),
-              // Numpad
               _buildNumpad(),
               const SizedBox(height: 16),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPinDots() {
+    return AnimatedSwitcher(
+      duration: 300.ms,
+      child: Row(
+        key: ValueKey(_isConfirming),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(4, (i) {
+          final filled = i < _pin.length;
+          return AnimatedContainer(
+            duration: 200.ms,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            width: 18,
+            height: 18,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: filled
+                  ? (_pinError ? AppColors.danger : AppColors.primary)
+                  : Colors.transparent,
+              border: Border.all(
+                color: _pinError
+                    ? AppColors.danger
+                    : (filled ? AppColors.primary : AppColors.border),
+                width: 2,
+              ),
+              boxShadow: filled
+                  ? [
+                      BoxShadow(
+                        color: (_pinError ? AppColors.danger : AppColors.primary)
+                            .withOpacity(0.4),
+                        blurRadius: 8,
+                      ),
+                    ]
+                  : null,
+            ),
+          );
+        }),
       ),
     );
   }
@@ -189,16 +197,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     child: Center(
                       child: key == 'del'
-                          ? const Icon(
-                              Icons.backspace_outlined,
-                              color: AppColors.textSecondary,
-                              size: 22,
-                            )
+                          ? const Icon(Icons.backspace_outlined,
+                              color: AppColors.textSecondary, size: 22)
                           : Text(
                               key,
-                              style: AppTextStyles.headlineLarge.copyWith(
-                                fontWeight: FontWeight.w400,
-                              ),
+                              style: AppTextStyles.headlineLarge
+                                  .copyWith(fontWeight: FontWeight.w400),
                             ),
                     ),
                   ),

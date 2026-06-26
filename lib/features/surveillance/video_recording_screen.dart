@@ -6,6 +6,8 @@ import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/section_header.dart';
 import '../../core/widgets/glow_button.dart';
 import '../../core/widgets/pulse_indicator.dart';
+import 'surveillance_config.dart';
+import 'surveillance_config_notifier.dart';
 
 class VideoRecordingScreen extends StatefulWidget {
   const VideoRecordingScreen({super.key});
@@ -14,14 +16,21 @@ class VideoRecordingScreen extends StatefulWidget {
 }
 
 class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
-  bool _autoStart = true;
-  int _cameraSelector = 0; // 0=Front, 1=Back
-  int _qualitySelector = 0; // 0=360p, 1=720p
-  int _durationSelector = 1; // 0=30s, 1=1m, 2=5m
+  SurveillanceConfigNotifier get _notifier =>
+      SurveillanceConfigNotifier.instance;
 
   final _cameras = ['Front', 'Back'];
   final _qualities = ['360p (Small)', '720p (HD)'];
   final _durations = ['30s', '1m', '5m'];
+
+  @override
+  void initState() {
+    super.initState();
+    _notifier.load();
+  }
+
+  bool get _videoActive =>
+      _notifier.config.captureMode == CaptureMode.video;
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +47,11 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.border),
             ),
-            child: const Icon(Icons.arrow_back_ios_new_rounded,
-                size: 16, color: AppColors.textPrimary),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 16,
+              color: AppColors.textPrimary,
+            ),
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -54,115 +66,28 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
                 const SizedBox(height: 4),
                 _buildVideoPreview(),
                 _buildInfoBanner(),
+                if (!_videoActive) ...[
+                  const SizedBox(height: 12),
+                  _buildPausedBanner(),
+                ],
                 const SectionHeader(title: 'RECORDING SETTINGS'),
-                GlassCard(
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: _autoStart
-                              ? AppColors.danger.withOpacity(0.15)
-                              : AppColors.surfaceElevated,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(Icons.fiber_manual_record_rounded,
-                            color: _autoStart
-                                ? AppColors.danger
-                                : AppColors.textTertiary,
-                            size: 22),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Auto-start on Trigger',
-                                style: AppTextStyles.titleMedium),
-                            Text('Start recording silently in background',
-                                style: AppTextStyles.bodySmall),
-                          ],
-                        ),
-                      ),
-                      Switch(
-                        value: _autoStart,
-                        onChanged: (v) => setState(() => _autoStart = v),
-                        activeTrackColor: AppColors.danger,
-                        activeColor: Colors.white,
-                        inactiveThumbColor: AppColors.textTertiary,
-                        inactiveTrackColor: AppColors.surfaceHighest,
-                        trackOutlineColor:
-                            WidgetStateProperty.all(Colors.transparent),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(delay: 200.ms),
+                _buildAutoStartCard(),
                 const SizedBox(height: 10),
-                GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Camera to Use', style: AppTextStyles.titleMedium),
-                      const SizedBox(height: 12),
-                      _SegmentedSelector(
-                        options: _cameras,
-                        selected: _cameraSelector,
-                        color: AppColors.danger,
-                        onSelect: (i) => setState(() => _cameraSelector = i),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(delay: 260.ms),
+                _buildCameraCard(),
                 const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GlassCard(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Quality', style: AppTextStyles.titleMedium),
-                            const SizedBox(height: 12),
-                            _SegmentedSelector(
-                              options: _qualities,
-                              selected: _qualitySelector,
-                              color: AppColors.danger,
-                              onSelect: (i) =>
-                                  setState(() => _qualitySelector = i),
-                            ),
-                          ],
-                        ),
-                      ).animate().fadeIn(delay: 320.ms),
-                    ),
-                  ],
-                ),
+                _buildQualityCard(),
                 const SizedBox(height: 10),
-                 GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Max Duration', style: AppTextStyles.titleMedium),
-                      const SizedBox(height: 12),
-                      _SegmentedSelector(
-                        options: _durations,
-                        selected: _durationSelector,
-                        color: AppColors.danger,
-                        onSelect: (i) => setState(() => _durationSelector = i),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(delay: 380.ms),
+                _buildDurationCard(),
                 const SectionHeader(title: 'RECENT RECORDINGS'),
                 _buildRecordingsList(),
                 const SizedBox(height: 16),
                 GlowButton(
-                  label: 'Test Recording (3s)',
+                  label: _videoActive ? 'Test Recording (3s)' : 'Video Mode Paused',
                   icon: Icons.videocam_rounded,
-                  onPressed: () {},
+                  onPressed: _videoActive ? () {} : null,
                   gradient: const LinearGradient(
-                      colors: [Color(0xFFFF3131), Color(0xFFCC0000)]),
+                    colors: [Color(0xFFFF3131), Color(0xFFCC0000)],
+                  ),
                   glowColor: AppColors.danger,
                 ).animate().fadeIn(delay: 480.ms),
                 const SizedBox(height: 28),
@@ -173,6 +98,187 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
       ),
     );
   }
+
+  // ── Config-bound cards ──────────────────────────────────────────────────────
+
+  Widget _buildAutoStartCard() {
+    return ListenableBuilder(
+      listenable: _notifier,
+      builder: (context, _) {
+        final cfg = _notifier.config;
+        return Opacity(
+          opacity: _videoActive ? 1.0 : 0.55,
+          child: AbsorbPointer(
+            absorbing: !_videoActive,
+            child: GlassCard(
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: cfg.videoAutoStart
+                          ? AppColors.danger.withOpacity(0.15)
+                          : AppColors.surfaceElevated,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.fiber_manual_record_rounded,
+                      color: cfg.videoAutoStart
+                          ? AppColors.danger
+                          : AppColors.textTertiary,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Auto-start on Trigger',
+                            style: AppTextStyles.titleMedium),
+                        Text('Start recording silently in background',
+                            style: AppTextStyles.bodySmall),
+                      ],
+                    ),
+                  ),
+                  Switch(
+                    value: cfg.videoAutoStart,
+                    onChanged: _videoActive
+                        ? (v) => _notifier.setVideoAutoStart(v)
+                        : null,
+                    activeTrackColor: AppColors.danger,
+                    activeThumbColor: Colors.white,
+                    inactiveThumbColor: AppColors.textTertiary,
+                    inactiveTrackColor: AppColors.surfaceHighest,
+                    trackOutlineColor:
+                        WidgetStateProperty.all(Colors.transparent),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ).animate().fadeIn(delay: 200.ms);
+  }
+
+  Widget _buildCameraCard() {
+    return ListenableBuilder(
+      listenable: _notifier,
+      builder: (context, _) {
+        final cfg = _notifier.config;
+        return Opacity(
+          opacity: _videoActive ? 1.0 : 0.55,
+          child: AbsorbPointer(
+            absorbing: !_videoActive,
+            child: GlassCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Camera to Use', style: AppTextStyles.titleMedium),
+                  const SizedBox(height: 12),
+                  _SegmentedSelector(
+                    options: _cameras,
+                    selected: cfg.videoCameraIdx,
+                    color: AppColors.danger,
+                    onSelect: (i) => _notifier.setVideoCameraIdx(i),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ).animate().fadeIn(delay: 260.ms);
+  }
+
+  Widget _buildQualityCard() {
+    return ListenableBuilder(
+      listenable: _notifier,
+      builder: (context, _) {
+        final cfg = _notifier.config;
+        return Opacity(
+          opacity: _videoActive ? 1.0 : 0.55,
+          child: AbsorbPointer(
+            absorbing: !_videoActive,
+            child: GlassCard(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Quality', style: AppTextStyles.titleMedium),
+                  const SizedBox(height: 12),
+                  _SegmentedSelector(
+                    options: _qualities,
+                    selected: cfg.videoQualityIdx,
+                    color: AppColors.danger,
+                    onSelect: (i) => _notifier.setVideoQualityIdx(i),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ).animate().fadeIn(delay: 320.ms);
+  }
+
+  Widget _buildDurationCard() {
+    return ListenableBuilder(
+      listenable: _notifier,
+      builder: (context, _) {
+        final cfg = _notifier.config;
+        return Opacity(
+          opacity: _videoActive ? 1.0 : 0.55,
+          child: AbsorbPointer(
+            absorbing: !_videoActive,
+            child: GlassCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Max Duration', style: AppTextStyles.titleMedium),
+                  const SizedBox(height: 12),
+                  _SegmentedSelector(
+                    options: _durations,
+                    selected: cfg.videoDurationIdx,
+                    color: AppColors.danger,
+                    onSelect: (i) => _notifier.setVideoDurationIdx(i),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ).animate().fadeIn(delay: 380.ms);
+  }
+
+  Widget _buildPausedBanner() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.warning.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.warning.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.pause_circle_outline_rounded,
+              color: AppColors.warning, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Video recording paused — Photo mode is active. Switch Capture Mode on the Surveillance tab to resume.',
+              style: AppTextStyles.bodySmall.copyWith(color: AppColors.warning),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: 100.ms);
+  }
+
+  // ── Visual helpers (preserved from original) ────────────────────────────────
 
   Widget _buildVideoPreview() {
     return Container(
@@ -185,29 +291,37 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
       ),
       child: Stack(
         children: [
-          // REC indicator hidden by default, shown for preview
           Positioned(
-            top: 16, left: 16,
+            top: 16,
+            left: 16,
             child: Row(
               children: [
                 PulseIndicator(color: AppColors.danger, size: 8, pulseSize: 18),
                 const SizedBox(width: 8),
-                Text('REC', style: AppTextStyles.labelLarge.copyWith(color: AppColors.danger)),
+                Text('REC',
+                    style: AppTextStyles.labelLarge
+                        .copyWith(color: AppColors.danger)),
               ],
             ),
           ),
           Positioned(
-            top: 16, right: 16,
-            child: Text('00:00:00', style: AppTextStyles.mono.copyWith(color: Colors.white70)),
+            top: 16,
+            right: 16,
+            child: Text('00:00:00',
+                style: AppTextStyles.mono.copyWith(color: Colors.white70)),
           ),
           Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.videocam_outlined, color: Colors.white12, size: 48),
+                const Icon(Icons.videocam_outlined,
+                    color: Colors.white12, size: 48),
                 const SizedBox(height: 8),
-                Text('Video preview is hidden during actual recording',
-                    style: AppTextStyles.bodySmall.copyWith(color: Colors.white24)),
+                Text(
+                  'Video preview is hidden during actual recording',
+                  style:
+                      AppTextStyles.bodySmall.copyWith(color: Colors.white24),
+                ),
               ],
             ),
           ),
@@ -233,8 +347,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
           Expanded(
             child: Text(
               'Recordings happen silently in the background with no visual indicators.',
-              style: AppTextStyles.bodySmall
-                  .copyWith(color: AppColors.danger),
+              style: AppTextStyles.bodySmall.copyWith(color: AppColors.danger),
             ),
           ),
         ],
@@ -252,25 +365,32 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
             child: Row(
               children: [
                 Container(
-                  width: 40, height: 40,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: AppColors.surfaceHighest,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.play_arrow_rounded, color: AppColors.textSecondary),
+                  child: const Icon(Icons.play_arrow_rounded,
+                      color: AppColors.textSecondary),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('VID_2026051${7 - index}_0${index}2345.mp4', style: AppTextStyles.titleMedium),
+                      Text(
+                        'VID_2026051${7 - index}_0${index}2345.mp4',
+                        style: AppTextStyles.titleMedium,
+                      ),
                       const SizedBox(height: 2),
-                      Text('30s • ${4 + index * 2}.2 MB', style: AppTextStyles.bodySmall),
+                      Text('30s • ${4 + index * 2}.2 MB',
+                          style: AppTextStyles.bodySmall),
                     ],
                   ),
                 ),
-                const Icon(Icons.more_vert_rounded, color: AppColors.textTertiary),
+                const Icon(Icons.more_vert_rounded,
+                    color: AppColors.textTertiary),
               ],
             ),
           ).animate().fadeIn(delay: Duration(milliseconds: 400 + (index * 60))),
@@ -304,24 +424,25 @@ class _SegmentedSelector extends StatelessWidget {
               duration: 200.ms,
               height: 38,
               margin: EdgeInsets.only(
-                  right: e.key < options.length - 1 ? 8 : 0),
+                right: e.key < options.length - 1 ? 8 : 0,
+              ),
               decoration: BoxDecoration(
                 color: isSelected
                     ? color.withOpacity(0.15)
                     : AppColors.surfaceElevated,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                    color: isSelected
-                        ? color.withOpacity(0.5)
-                        : AppColors.border),
+                  color: isSelected ? color.withOpacity(0.5) : AppColors.border,
+                ),
               ),
               child: Center(
-                child: Text(e.value,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      color: isSelected ? color : AppColors.textSecondary,
-                      fontWeight:
-                          isSelected ? FontWeight.w700 : FontWeight.w500,
-                    )),
+                child: Text(
+                  e.value,
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: isSelected ? color : AppColors.textSecondary,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ),

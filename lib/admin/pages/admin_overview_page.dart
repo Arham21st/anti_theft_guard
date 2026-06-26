@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../auth/user_role.dart';
+import '../auth/web_auth_state.dart';
 import '../data/admin_mock_data.dart';
 import '../models/admin_device.dart';
 import '../models/admin_event.dart';
@@ -18,6 +20,248 @@ class AdminOverviewPage extends StatelessWidget {
   });
 
   final AdminDevice selectedDevice;
+  final ValueChanged<int> onNavigate;
+
+  @override
+  Widget build(BuildContext context) {
+    // Role-aware: end-users get a personal dashboard; admins get the fleet view.
+    final role = WebAuthProvider.of(context).role;
+    if (role == UserRole.user) {
+      return _UserOverview(device: selectedDevice, onNavigate: onNavigate);
+    }
+    return _AdminFleetOverview(
+        device: selectedDevice, onNavigate: onNavigate);
+  }
+}
+
+// ── User (single personal device) overview ────────────────────────────────────
+
+class _UserOverview extends StatelessWidget {
+  const _UserOverview({required this.device, required this.onNavigate});
+
+  final AdminDevice device;
+  final ValueChanged<int> onNavigate;
+
+  Color _batteryColor(int value) {
+    if (value <= 20) return AppColors.danger;
+    if (value <= 45) return AppColors.warning;
+    return AppColors.success;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isStolen = device.status == DeviceProtectionStatus.stolen;
+    final myEvents = AdminMockData.events
+        .where((e) => e.deviceId == device.id)
+        .take(5)
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AdminPageHeader(
+          title: 'Your device',
+          subtitle:
+              'Track and review data for your ${device.model}. Demo data is shown.',
+          actions: [
+            AdminPrimaryButton(
+              label: 'View Location',
+              icon: Icons.location_on_rounded,
+              onPressed: () => onNavigate(3),
+              color: AppColors.success,
+            ),
+            AdminPrimaryButton(
+              label: 'Surveillance',
+              icon: Icons.videocam_rounded,
+              onPressed: () => onNavigate(2),
+              color: AppColors.info,
+            ),
+          ],
+        ),
+        const SizedBox(height: 22),
+        // Hero status banner — prominent when the phone is stolen.
+        _DeviceStatusBanner(device: device),
+        const SizedBox(height: 18),
+        AdminResponsiveGrid(
+          minItemWidth: 200,
+          children: [
+            AdminStatCard(
+              icon: Icons.battery_charging_full_rounded,
+              label: 'Battery',
+              value: '${device.batteryLevel}%',
+              change: device.batteryLevel <= 20 ? 'Low battery' : 'Healthy',
+              color: _batteryColor(device.batteryLevel),
+            ),
+            AdminStatCard(
+              icon: Icons.location_on_rounded,
+              label: 'Last location',
+              value: device.location,
+              change: device.lastSeen,
+              color: AppColors.info,
+            ),
+            AdminStatCard(
+              icon: Icons.photo_camera_rounded,
+              label: 'Photos captured',
+              value: '${device.capturedPhotos}',
+              change: 'Intruder evidence',
+              color: AppColors.secondary,
+            ),
+            AdminStatCard(
+              icon: Icons.videocam_rounded,
+              label: 'Video recordings',
+              value: '${device.recordings}',
+              change: 'Silent clips',
+              color: AppColors.danger,
+            ),
+          ],
+        ),
+        const SizedBox(height: 18),
+        AdminResponsiveGrid(
+          minItemWidth: 420,
+          maxColumns: 2,
+          children: [
+            AdminPanel(
+              header: 'Device details',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AdminDeviceIdentity(device: device),
+                  const SizedBox(height: 14),
+                  AdminInfoLine(label: 'Model', value: device.model),
+                  const SizedBox(height: 8),
+                  AdminInfoLine(label: 'Coordinates', value: device.coordinates),
+                  const SizedBox(height: 8),
+                  AdminInfoLine(label: 'Trigger', value: device.triggerMethod),
+                  const SizedBox(height: 8),
+                  AdminInfoLine(
+                      label: 'Stealth',
+                      value: device.stealthEnabled ? 'Enabled' : 'Disabled'),
+                ],
+              ),
+            ),
+            _RecentActivityPanel(
+              events: myEvents,
+              onOpenLogs: () => onNavigate(4),
+            ),
+          ],
+        ),
+        const SizedBox(height: 18),
+        if (isStolen)
+          AdminPanel(
+            header: 'Recommended actions',
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                AdminPrimaryButton(
+                  label: 'See latest location',
+                  icon: Icons.map_rounded,
+                  onPressed: () => onNavigate(3),
+                ),
+                AdminPrimaryButton(
+                  label: 'Review captures',
+                  icon: Icons.camera_alt_rounded,
+                  onPressed: () => onNavigate(2),
+                  color: AppColors.info,
+                ),
+                AdminPrimaryButton(
+                  label: 'Send emergency SMS',
+                  icon: Icons.sms_rounded,
+                  onPressed: () => onNavigate(6),
+                  color: AppColors.warning,
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _DeviceStatusBanner extends StatelessWidget {
+  const _DeviceStatusBanner({required this.device});
+
+  final AdminDevice device;
+
+  Color _color(DeviceProtectionStatus status) {
+    switch (status) {
+      case DeviceProtectionStatus.protected:
+        return AppColors.success;
+      case DeviceProtectionStatus.warning:
+        return AppColors.warning;
+      case DeviceProtectionStatus.offline:
+        return AppColors.textTertiary;
+      case DeviceProtectionStatus.stolen:
+        return AppColors.danger;
+    }
+  }
+
+  IconData _icon(DeviceProtectionStatus status) {
+    switch (status) {
+      case DeviceProtectionStatus.protected:
+        return Icons.shield_rounded;
+      case DeviceProtectionStatus.warning:
+        return Icons.warning_amber_rounded;
+      case DeviceProtectionStatus.offline:
+        return Icons.cloud_off_rounded;
+      case DeviceProtectionStatus.stolen:
+        return Icons.report_gmailerrorred_rounded;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _color(device.status);
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.35)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(_icon(device.status), color: color, size: 22),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(device.deviceName, style: AdminTextStyles.cardTitle),
+                const SizedBox(height: 3),
+                Text(
+                  device.status == DeviceProtectionStatus.stolen
+                      ? 'This device is flagged stolen. Tracking and surveillance remain active.'
+                      : device.status == DeviceProtectionStatus.offline
+                          ? 'This device is currently offline. Last seen ${device.lastSeen}.'
+                          : 'Anti-theft protection is active and monitoring.',
+                  style: AdminTextStyles.small,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          AdminStatusBadge.device(status: device.status),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Admin (fleet) overview — the original dashboard ───────────────────────────
+
+class _AdminFleetOverview extends StatelessWidget {
+  const _AdminFleetOverview({required this.device, required this.onNavigate});
+
+  final AdminDevice device;
   final ValueChanged<int> onNavigate;
 
   @override
@@ -106,7 +350,7 @@ class AdminOverviewPage extends StatelessWidget {
           children: [
             _HighRiskDevicesTable(devices: devices),
             _SelectedDeviceSummary(
-              device: selectedDevice,
+              device: device,
               onOpenSurveillance: () => onNavigate(2),
               onOpenLocation: () => onNavigate(3),
             ),

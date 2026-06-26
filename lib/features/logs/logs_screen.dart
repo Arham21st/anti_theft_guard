@@ -16,14 +16,62 @@ class _LogsScreenState extends State<LogsScreen> {
   final _filters = ['All', 'Captures', 'Location', 'SMS', 'System'];
 
   final _logs = const [
-    _LogEntry(Icons.camera_front_rounded, 'Front Camera Capture', 'Photo captured silently', '08:32 PM', AppColors.info),
-    _LogEntry(Icons.location_on_rounded, 'Location Ping', '24.8607° N, 67.0011° E', '08:15 PM', AppColors.success),
-    _LogEntry(Icons.shield_rounded, 'Anti-Theft Activated', 'Trigger: Power × 3', '07:50 PM', AppColors.primary),
-    _LogEntry(Icons.camera_rear_rounded, 'Back Camera Capture', 'Surroundings captured', '07:49 PM', AppColors.secondary),
-    _LogEntry(Icons.sms_rounded, 'SMS Sent', 'Location sent to +92-XXX', '06:30 PM', AppColors.warning),
-    _LogEntry(Icons.visibility_off_rounded, 'Stealth Mode ON', 'All indicators hidden', '06:00 PM', AppColors.info),
-    _LogEntry(Icons.restart_alt_rounded, 'System Restarted', 'Auto-start triggered', '05:45 PM', AppColors.textTertiary),
-    _LogEntry(Icons.fiber_manual_record_rounded, 'Video Recording', '45s recorded', '05:30 PM', AppColors.danger),
+    _LogEntry(
+      Icons.camera_front_rounded,
+      'Front Camera Capture',
+      'Photo captured silently',
+      '08:32 PM',
+      AppColors.info,
+    ),
+    _LogEntry(
+      Icons.location_on_rounded,
+      'Location Ping',
+      '24.8607° N, 67.0011° E',
+      '08:15 PM',
+      AppColors.success,
+    ),
+    _LogEntry(
+      Icons.shield_rounded,
+      'Anti-Theft Activated',
+      'Trigger: Power × 3',
+      '07:50 PM',
+      AppColors.primary,
+    ),
+    _LogEntry(
+      Icons.camera_rear_rounded,
+      'Back Camera Capture',
+      'Surroundings captured',
+      '07:49 PM',
+      AppColors.secondary,
+    ),
+    _LogEntry(
+      Icons.sms_rounded,
+      'SMS Sent',
+      'Location sent to +92-XXX',
+      '06:30 PM',
+      AppColors.warning,
+    ),
+    _LogEntry(
+      Icons.visibility_off_rounded,
+      'Stealth Mode ON',
+      'All indicators hidden',
+      '06:00 PM',
+      AppColors.info,
+    ),
+    _LogEntry(
+      Icons.restart_alt_rounded,
+      'System Restarted',
+      'Auto-start triggered',
+      '05:45 PM',
+      AppColors.textTertiary,
+    ),
+    _LogEntry(
+      Icons.fiber_manual_record_rounded,
+      'Video Recording',
+      '45s recorded',
+      '05:30 PM',
+      AppColors.danger,
+    ),
   ];
 
   @override
@@ -41,14 +89,23 @@ class _LogsScreenState extends State<LogsScreen> {
                   Text('Event Logs', style: AppTextStyles.headlineLarge),
                   const Spacer(),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                      border: Border.all(
+                        color: AppColors.primary.withOpacity(0.3),
+                      ),
                     ),
-                    child: Text('${_logs.length} events',
-                        style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary)),
+                    child: Text(
+                      '${_logs.length} events',
+                      style: AppTextStyles.labelSmall.copyWith(
+                        color: AppColors.primary,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -61,26 +118,35 @@ class _LogsScreenState extends State<LogsScreen> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 itemCount: _filters.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (_, i) {
                   final selected = _selectedFilter == i;
                   return GestureDetector(
                     onTap: () => setState(() => _selectedFilter = i),
                     child: AnimatedContainer(
                       duration: 200.ms,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: selected ? AppColors.primary : AppColors.surface,
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: selected ? AppColors.primary : AppColors.border,
+                          color: selected
+                              ? AppColors.primary
+                              : AppColors.border,
                         ),
                       ),
                       child: Text(
                         _filters[i],
                         style: AppTextStyles.labelMedium.copyWith(
-                          color: selected ? Colors.white : AppColors.textSecondary,
-                          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                          color: selected
+                              ? Colors.white
+                              : AppColors.textSecondary,
+                          fontWeight: selected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                         ),
                       ),
                     ),
@@ -96,10 +162,13 @@ class _LogsScreenState extends State<LogsScreen> {
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 itemCount: _logs.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (_, i) => _LogTile(entry: _logs[i])
                     .animate()
-                    .fadeIn(delay: Duration(milliseconds: 60 * i), duration: 300.ms)
+                    .fadeIn(
+                      delay: Duration(milliseconds: 60 * i),
+                      duration: 300.ms,
+                    )
                     .slideX(begin: 0.05, end: 0),
               ),
             ),
@@ -130,7 +199,8 @@ class _LogTile extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 40, height: 40,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: entry.color.withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),

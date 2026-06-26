@@ -5,6 +5,8 @@ import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/glass_card.dart';
 import '../../core/widgets/section_header.dart';
 import '../../core/widgets/glow_button.dart';
+import 'surveillance_config.dart';
+import 'surveillance_config_notifier.dart';
 
 class BackCameraScreen extends StatefulWidget {
   const BackCameraScreen({super.key});
@@ -13,11 +15,20 @@ class BackCameraScreen extends StatefulWidget {
 }
 
 class _BackCameraScreenState extends State<BackCameraScreen> {
-  bool _autoCapture = true;
-  int _captureDelay = 0; // 0=0s, 1=2s, 2=5s
-  int _maxPhotos = 1; // 0=1, 1=3, 2=5
+  SurveillanceConfigNotifier get _notifier =>
+      SurveillanceConfigNotifier.instance;
+
   final _delays = ['10s', '20s', '30s'];
   final _photoCounts = ['1', '3', '5'];
+
+  @override
+  void initState() {
+    super.initState();
+    _notifier.load();
+  }
+
+  bool get _photoActive =>
+      _notifier.config.captureMode == CaptureMode.photo;
 
   @override
   Widget build(BuildContext context) {
@@ -46,19 +57,35 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: AppColors.warning.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.warning.withOpacity(0.3)),
-              ),
-              child: Text(
-                'Ready',
-                style: AppTextStyles.labelSmall.copyWith(
-                  color: AppColors.warning,
-                ),
-              ),
+            child: ListenableBuilder(
+              listenable: _notifier,
+              builder: (context, _) {
+                final cfg = _notifier.config;
+                final active = _photoActive && cfg.backAutoCapture;
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: (active ? AppColors.warning : AppColors.textTertiary)
+                        .withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: (active
+                              ? AppColors.warning
+                              : AppColors.textTertiary)
+                          .withOpacity(0.3),
+                    ),
+                  ),
+                  child: Text(
+                    _photoActive
+                        ? (cfg.backAutoCapture ? 'Ready' : 'Off')
+                        : 'Paused',
+                    style: AppTextStyles.labelSmall.copyWith(
+                      color: active ? AppColors.warning : AppColors.textTertiary,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -72,99 +99,23 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
                 const SizedBox(height: 4),
                 _buildCameraPreview(),
                 _buildInfoBanner(),
+                if (!_photoActive) ...[
+                  const SizedBox(height: 12),
+                  _buildPausedBanner(),
+                ],
                 const SectionHeader(title: 'CAPTURE SETTINGS'),
-                GlassCard(
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 44,
-                        decoration: BoxDecoration(
-                          color: _autoCapture
-                              ? AppColors.warning.withOpacity(0.15)
-                              : AppColors.surfaceElevated,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(
-                          Icons.camera_rear_rounded,
-                          color: _autoCapture
-                              ? AppColors.warning
-                              : AppColors.textTertiary,
-                          size: 22,
-                        ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Auto-capture in Stealth Mode',
-                              style: AppTextStyles.titleMedium,
-                            ),
-                            Text(
-                              'Capture recurring images when stealth mode is activated',
-                              style: AppTextStyles.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Switch(
-                        value: _autoCapture,
-                        onChanged: (v) => setState(() => _autoCapture = v),
-                        activeTrackColor: AppColors.warning,
-                        activeColor: Colors.white,
-                        inactiveThumbColor: AppColors.textTertiary,
-                        inactiveTrackColor: AppColors.surfaceHighest,
-                        trackOutlineColor: WidgetStateProperty.all(
-                          Colors.transparent,
-                        ),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(delay: 200.ms),
+                _buildAutoCaptureCard(),
                 const SizedBox(height: 10),
-                GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Capture Delay', style: AppTextStyles.titleMedium),
-                      const SizedBox(height: 12),
-                      _SegmentedSelector(
-                        options: _delays,
-                        selected: _captureDelay,
-                        color: AppColors.warning,
-                        onSelect: (i) => setState(() => _captureDelay = i),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(delay: 260.ms),
+                _buildDelayCard(),
                 const SizedBox(height: 10),
-                GlassCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Max Photos per Trigger',
-                        style: AppTextStyles.titleMedium,
-                      ),
-                      const SizedBox(height: 12),
-                      _SegmentedSelector(
-                        options: _photoCounts,
-                        selected: _maxPhotos,
-                        color: AppColors.warning,
-                        onSelect: (i) => setState(() => _maxPhotos = i),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(delay: 320.ms),
+                _buildMaxPhotosCard(),
                 const SectionHeader(title: 'RECENT CAPTURES'),
                 _buildGallery(),
                 const SizedBox(height: 16),
                 GlowButton(
-                  label: 'Capture Now (Preview)',
+                  label: _photoActive ? 'Capture Now (Preview)' : 'Photo Mode Paused',
                   icon: Icons.camera_rear_rounded,
-                  onPressed: () {},
+                  onPressed: _photoActive ? () {} : null,
                   gradient: AppColors.warningGradient,
                   glowColor: AppColors.warning,
                 ).animate().fadeIn(delay: 420.ms),
@@ -176,6 +127,159 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
       ),
     );
   }
+
+  // ── Config-bound cards ──────────────────────────────────────────────────────
+
+  Widget _buildAutoCaptureCard() {
+    return ListenableBuilder(
+      listenable: _notifier,
+      builder: (context, _) {
+        final cfg = _notifier.config;
+        return Opacity(
+          opacity: _photoActive ? 1.0 : 0.55,
+          child: AbsorbPointer(
+            absorbing: !_photoActive,
+            child: GlassCard(
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: cfg.backAutoCapture
+                          ? AppColors.warning.withOpacity(0.15)
+                          : AppColors.surfaceElevated,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.camera_rear_rounded,
+                      color: cfg.backAutoCapture
+                          ? AppColors.warning
+                          : AppColors.textTertiary,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Auto-capture in Stealth Mode',
+                            style: AppTextStyles.titleMedium),
+                        Text(
+                          'Capture recurring images when stealth mode is activated',
+                          style: AppTextStyles.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Switch(
+                    value: cfg.backAutoCapture,
+                    onChanged: _photoActive
+                        ? (v) => _notifier.setBackAutoCapture(v)
+                        : null,
+                    activeTrackColor: AppColors.warning,
+                    activeThumbColor: Colors.white,
+                    inactiveThumbColor: AppColors.textTertiary,
+                    inactiveTrackColor: AppColors.surfaceHighest,
+                    trackOutlineColor:
+                        WidgetStateProperty.all(Colors.transparent),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ).animate().fadeIn(delay: 200.ms);
+  }
+
+  Widget _buildDelayCard() {
+    return ListenableBuilder(
+      listenable: _notifier,
+      builder: (context, _) {
+        final cfg = _notifier.config;
+        return Opacity(
+          opacity: _photoActive ? 1.0 : 0.55,
+          child: AbsorbPointer(
+            absorbing: !_photoActive,
+            child: GlassCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Capture Delay', style: AppTextStyles.titleMedium),
+                  const SizedBox(height: 12),
+                  _SegmentedSelector(
+                    options: _delays,
+                    selected: cfg.backDelayIdx,
+                    color: AppColors.warning,
+                    onSelect: (i) => _notifier.setBackDelayIdx(i),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ).animate().fadeIn(delay: 260.ms);
+  }
+
+  Widget _buildMaxPhotosCard() {
+    return ListenableBuilder(
+      listenable: _notifier,
+      builder: (context, _) {
+        final cfg = _notifier.config;
+        return Opacity(
+          opacity: _photoActive ? 1.0 : 0.55,
+          child: AbsorbPointer(
+            absorbing: !_photoActive,
+            child: GlassCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Max Photos per Trigger',
+                      style: AppTextStyles.titleMedium),
+                  const SizedBox(height: 12),
+                  _SegmentedSelector(
+                    options: _photoCounts,
+                    selected: cfg.backMaxPhotosIdx,
+                    color: AppColors.warning,
+                    onSelect: (i) => _notifier.setBackMaxPhotosIdx(i),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ).animate().fadeIn(delay: 320.ms);
+  }
+
+  Widget _buildPausedBanner() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.warning.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.warning.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.pause_circle_outline_rounded,
+              color: AppColors.warning, size: 18),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Photo capture paused — Video mode is active. Switch Capture Mode on the Surveillance tab to resume.',
+              style: AppTextStyles.bodySmall.copyWith(color: AppColors.warning),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(delay: 100.ms);
+  }
+
+  // ── Visual helpers (preserved from original) ────────────────────────────────
 
   Widget _buildCameraPreview() {
     return Container(
@@ -192,11 +296,7 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
       child: Stack(
         children: [
           const Center(
-            child: Icon(
-              Icons.camera_rear_rounded,
-              color: Colors.white12,
-              size: 52,
-            ),
+            child: Icon(Icons.camera_rear_rounded, color: Colors.white12, size: 52),
           ),
           // Scope overlay
           Center(
@@ -224,10 +324,8 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
             left: 0,
             right: 0,
             child: Center(
-              child: Text(
-                'Environment View',
-                style: AppTextStyles.bodySmall.copyWith(color: Colors.white24),
-              ),
+              child: Text('Environment View',
+                  style: AppTextStyles.bodySmall.copyWith(color: Colors.white24)),
             ),
           ),
           Positioned(
@@ -242,18 +340,12 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.camera_rear_rounded,
-                    color: AppColors.warning,
-                    size: 12,
-                  ),
+                  const Icon(Icons.camera_rear_rounded,
+                      color: AppColors.warning, size: 12),
                   const SizedBox(width: 4),
-                  Text(
-                    'REAR',
-                    style: AppTextStyles.labelSmall.copyWith(
-                      color: AppColors.warning,
-                    ),
-                  ),
+                  Text('REAR',
+                      style: AppTextStyles.labelSmall
+                          .copyWith(color: AppColors.warning)),
                 ],
               ),
             ),
@@ -274,11 +366,8 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.landscape_rounded,
-            color: AppColors.warning,
-            size: 18,
-          ),
+          const Icon(Icons.landscape_rounded,
+              color: AppColors.warning, size: 18),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -297,7 +386,7 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: 4,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
         itemBuilder: (_, i) {
           final hasCapture = i == 0;
           return Container(
@@ -315,19 +404,14 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
                 ? Stack(
                     alignment: Alignment.center,
                     children: [
-                      const Icon(
-                        Icons.landscape_rounded,
-                        color: Colors.white12,
-                        size: 28,
-                      ),
+                      const Icon(Icons.landscape_rounded,
+                          color: Colors.white12, size: 28),
                       Positioned(
                         bottom: 4,
                         right: 4,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 4,
-                            vertical: 2,
-                          ),
+                              horizontal: 4, vertical: 2),
                           decoration: BoxDecoration(
                             color: AppColors.background.withOpacity(0.8),
                             borderRadius: BorderRadius.circular(4),
@@ -337,11 +421,8 @@ class _BackCameraScreenState extends State<BackCameraScreen> {
                       ),
                     ],
                   )
-                : const Icon(
-                    Icons.add_rounded,
-                    color: AppColors.textTertiary,
-                    size: 24,
-                  ),
+                : const Icon(Icons.add_rounded,
+                    color: AppColors.textTertiary, size: 24),
           );
         },
       ),

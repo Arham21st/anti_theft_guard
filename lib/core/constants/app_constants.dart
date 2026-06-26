@@ -3,7 +3,9 @@ class AppRoutes {
 
   static const String splash = '/';
   static const String admin = '/admin';
-  static const String onboarding = '/onboarding';
+  static const String register = '/register';
+  static const String pinSetup = '/pin-setup';
+  static const String pinLock = '/pin-lock';
   static const String home = '/home';
   static const String triggerSettings = '/trigger-settings';
   static const String passwordTrigger = '/password-trigger';

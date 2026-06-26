@@ -98,7 +98,7 @@ class AdminPanel extends StatelessWidget {
                   if (header != null)
                     Text(header!, style: AdminTextStyles.sectionTitle),
                   const Spacer(),
-                  if (trailing != null) trailing!,
+                  ?trailing,
                 ],
               ),
             ),
@@ -244,7 +244,7 @@ class AdminSectionTitle extends StatelessWidget {
             ],
           ),
         ),
-        if (trailing != null) trailing!,
+        ?trailing,
       ],
     );
   }
@@ -389,7 +389,7 @@ class _AdminToggleRowState extends State<AdminToggleRow> {
         ),
         Switch(
           value: value,
-          activeColor: Colors.white,
+          activeThumbColor: Colors.white,
           activeTrackColor: widget.color,
           inactiveThumbColor: AppColors.textTertiary,
           inactiveTrackColor: AppColors.surfaceHighest,

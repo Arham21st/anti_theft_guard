@@ -142,8 +142,9 @@ class _StealthModeScreenState extends State<StealthModeScreen> {
                           colors: [Color(0xFF2A2A3A), Color(0xFF1A1A28)],
                         )
                       : AppColors.primaryGradient,
-                  glowColor:
-                      _masterStealth ? Colors.transparent : AppColors.primary,
+                  glowColor: _masterStealth
+                      ? Colors.transparent
+                      : AppColors.primary,
                 ).animate().fadeIn(delay: 460.ms),
                 const SizedBox(height: 28),
               ]),
@@ -178,7 +179,7 @@ class _StealthModeScreenState extends State<StealthModeScreen> {
                 BoxShadow(
                   color: AppColors.success.withOpacity(0.08),
                   blurRadius: 20,
-                )
+                ),
               ]
             : null,
       ),
@@ -195,8 +196,9 @@ class _StealthModeScreenState extends State<StealthModeScreen> {
             ),
             child: Icon(
               Icons.visibility_off_rounded,
-              color:
-                  _masterStealth ? AppColors.success : AppColors.textTertiary,
+              color: _masterStealth
+                  ? AppColors.success
+                  : AppColors.textTertiary,
               size: 26,
             ),
           ),
@@ -220,7 +222,7 @@ class _StealthModeScreenState extends State<StealthModeScreen> {
             value: _masterStealth,
             onChanged: (v) => setState(() => _masterStealth = v),
             activeTrackColor: AppColors.success,
-            activeColor: Colors.white,
+            activeThumbColor: Colors.white,
             inactiveThumbColor: AppColors.textTertiary,
             inactiveTrackColor: AppColors.surfaceHighest,
             trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
@@ -272,7 +274,7 @@ class _StealthModeScreenState extends State<StealthModeScreen> {
             value: value,
             onChanged: onChanged,
             activeTrackColor: color,
-            activeColor: Colors.white,
+            activeThumbColor: Colors.white,
             inactiveThumbColor: AppColors.textTertiary,
             inactiveTrackColor: AppColors.surfaceHighest,
             trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
@@ -280,9 +282,9 @@ class _StealthModeScreenState extends State<StealthModeScreen> {
         ],
       ),
     ).animate().fadeIn(
-          delay: Duration(milliseconds: delay),
-          duration: 350.ms,
-        );
+      delay: Duration(milliseconds: delay),
+      duration: 350.ms,
+    );
   }
 
   Widget _buildInfoBanner() {
@@ -295,14 +297,16 @@ class _StealthModeScreenState extends State<StealthModeScreen> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.security_rounded,
-              color: AppColors.success, size: 18),
+          const Icon(
+            Icons.security_rounded,
+            color: AppColors.success,
+            size: 18,
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               'When Stealth Mode is active, no visual or audio cues will indicate the app is running in the background.',
-              style:
-                  AppTextStyles.bodySmall.copyWith(color: AppColors.success),
+              style: AppTextStyles.bodySmall.copyWith(color: AppColors.success),
             ),
           ),
         ],

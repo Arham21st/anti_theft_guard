@@ -32,7 +32,8 @@ class GlassCard extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: gradient ?? AppColors.cardGradient,
           borderRadius: BorderRadius.circular(borderRadius),
-          border: border ??
+          border:
+              border ??
               Border.all(
                 color: glowColor != null
                     ? glowColor!.withOpacity(0.3)
@@ -110,10 +111,13 @@ class FeatureCard extends StatelessWidget {
               ],
             ),
           ),
-          if (trailing != null) trailing!,
+          ?trailing,
           if (trailing == null)
-            const Icon(Icons.chevron_right_rounded,
-                color: AppColors.textTertiary, size: 20),
+            const Icon(
+              Icons.chevron_right_rounded,
+              color: AppColors.textTertiary,
+              size: 20,
+            ),
         ],
       ),
     );

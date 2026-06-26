@@ -41,7 +41,10 @@ class _AutoStartScreenState extends State<AutoStartScreen> {
           ),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('Auto-Start on Reboot', style: AppTextStyles.headlineMedium),
+        title: Text(
+          'Auto-Start on Reboot',
+          style: AppTextStyles.headlineMedium,
+        ),
       ),
       body: CustomScrollView(
         slivers: [
@@ -78,24 +81,28 @@ class _AutoStartScreenState extends State<AutoStartScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Auto-Start on Boot',
-                                style: AppTextStyles.titleLarge),
+                            Text(
+                              'Auto-Start on Boot',
+                              style: AppTextStyles.titleLarge,
+                            ),
                             const SizedBox(height: 2),
-                            Text('Activate protection on every device reboot',
-                                style: AppTextStyles.bodySmall),
+                            Text(
+                              'Activate protection on every device reboot',
+                              style: AppTextStyles.bodySmall,
+                            ),
                           ],
                         ),
                       ),
                       Switch(
                         value: _autoStartEnabled,
-                        onChanged: (v) =>
-                            setState(() => _autoStartEnabled = v),
+                        onChanged: (v) => setState(() => _autoStartEnabled = v),
                         activeTrackColor: AppColors.success,
-                        activeColor: Colors.white,
+                        activeThumbColor: Colors.white,
                         inactiveThumbColor: AppColors.textTertiary,
                         inactiveTrackColor: AppColors.surfaceHighest,
-                        trackOutlineColor:
-                            WidgetStateProperty.all(Colors.transparent),
+                        trackOutlineColor: WidgetStateProperty.all(
+                          Colors.transparent,
+                        ),
                       ),
                     ],
                   ),
@@ -126,12 +133,15 @@ class _AutoStartScreenState extends State<AutoStartScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Silent Reactivation',
-                                style: AppTextStyles.titleLarge),
+                            Text(
+                              'Silent Reactivation',
+                              style: AppTextStyles.titleLarge,
+                            ),
                             const SizedBox(height: 2),
                             Text(
-                                'No notification shown when system auto-starts',
-                                style: AppTextStyles.bodySmall),
+                              'No notification shown when system auto-starts',
+                              style: AppTextStyles.bodySmall,
+                            ),
                           ],
                         ),
                       ),
@@ -140,11 +150,12 @@ class _AutoStartScreenState extends State<AutoStartScreen> {
                         onChanged: (v) =>
                             setState(() => _silentReactivation = v),
                         activeTrackColor: AppColors.info,
-                        activeColor: Colors.white,
+                        activeThumbColor: Colors.white,
                         inactiveThumbColor: AppColors.textTertiary,
                         inactiveTrackColor: AppColors.surfaceHighest,
-                        trackOutlineColor:
-                            WidgetStateProperty.all(Colors.transparent),
+                        trackOutlineColor: WidgetStateProperty.all(
+                          Colors.transparent,
+                        ),
                       ),
                     ],
                   ),
@@ -164,31 +175,43 @@ class _AutoStartScreenState extends State<AutoStartScreen> {
                           color: AppColors.textTertiary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Icon(Icons.history_rounded,
-                            color: AppColors.textSecondary, size: 22),
+                        child: const Icon(
+                          Icons.history_rounded,
+                          color: AppColors.textSecondary,
+                          size: 22,
+                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('3 days ago',
-                                style: AppTextStyles.titleMedium),
-                            Text('Protection activated in 1.2s',
-                                style: AppTextStyles.bodySmall),
+                            Text(
+                              '3 days ago',
+                              style: AppTextStyles.titleMedium,
+                            ),
+                            Text(
+                              'Protection activated in 1.2s',
+                              style: AppTextStyles.bodySmall,
+                            ),
                           ],
                         ),
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.success.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Text('SUCCESS',
-                            style: AppTextStyles.labelSmall
-                                .copyWith(color: AppColors.success)),
+                        child: Text(
+                          'SUCCESS',
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: AppColors.success,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -217,7 +240,9 @@ class _AutoStartScreenState extends State<AutoStartScreen> {
       child: Row(
         children: [
           PulseIndicator(
-            color: _autoStartEnabled ? AppColors.success : AppColors.textTertiary,
+            color: _autoStartEnabled
+                ? AppColors.success
+                : AppColors.textTertiary,
             size: 12,
             pulseSize: 26,
           ),
@@ -227,7 +252,9 @@ class _AutoStartScreenState extends State<AutoStartScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _autoStartEnabled ? 'Boot Protection Active' : 'Boot Protection Disabled',
+                  _autoStartEnabled
+                      ? 'Boot Protection Active'
+                      : 'Boot Protection Disabled',
                   style: AppTextStyles.titleLarge,
                 ),
                 const SizedBox(height: 3),
@@ -247,7 +274,11 @@ class _AutoStartScreenState extends State<AutoStartScreen> {
 
   Widget _buildBootFlow() {
     final steps = [
-      ('Phone Powers On', Icons.power_settings_new_rounded, AppColors.textSecondary),
+      (
+        'Phone Powers On',
+        Icons.power_settings_new_rounded,
+        AppColors.textSecondary,
+      ),
       ('System Boot Complete', Icons.phone_android_rounded, AppColors.info),
       ('Anti-Theft Activated', Icons.shield_rounded, AppColors.success),
     ];
@@ -317,8 +348,10 @@ class _AutoStartScreenState extends State<AutoStartScreen> {
               children: [
                 Icon(Icons.check_circle_rounded, color: color, size: 13),
                 const SizedBox(width: 5),
-                Text(label,
-                    style: AppTextStyles.labelSmall.copyWith(color: color)),
+                Text(
+                  label,
+                  style: AppTextStyles.labelSmall.copyWith(color: color),
+                ),
               ],
             ),
           );

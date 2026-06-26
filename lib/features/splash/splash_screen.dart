@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/widgets/pulse_indicator.dart';
+import '../auth/local_auth_repository.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,7 +30,24 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _navigate() async {
     await Future.delayed(const Duration(milliseconds: 3000));
     if (!mounted) return;
-    Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+
+    final auth = LocalAuthRepository.instance;
+    final isRegistered = await auth.isRegistered();
+
+    String next;
+    if (!isRegistered) {
+      // First run — collect email + password, then set a PIN.
+      next = AppRoutes.register;
+    } else if (!await auth.hasPin()) {
+      // Registered but PIN missing — send straight to PIN setup.
+      next = AppRoutes.pinSetup;
+    } else {
+      // Returning user — require PIN on cold start.
+      next = AppRoutes.pinLock;
+    }
+
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, next);
   }
 
   @override
@@ -133,7 +151,7 @@ class _LoadingBarState extends State<_LoadingBar>
       padding: const EdgeInsets.symmetric(horizontal: 60),
       child: AnimatedBuilder(
         animation: _progress,
-        builder: (_, __) => ClipRRect(
+        builder: (_, _) => ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: _progress.value,

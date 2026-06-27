@@ -8,9 +8,9 @@
 # Usage in vercel.json -> "buildCommand": "bash build-vercel.sh"
 set -euo pipefail
 
-# Pin a Flutter release channel/version for reproducible Vercel builds.
-# 3.35.x satisfies the project's `sdk: ^3.11.5` constraint (Dart bundled).
-FLUTTER_VERSION="${FLUTTER_VERSION:-3.35.5}"
+# Pin a Flutter release version for reproducible Vercel builds.
+# 3.44.4 bundles Dart 3.11.x, satisfying the project's `sdk: ^3.11.5` constraint.
+FLUTTER_VERSION="${FLUTTER_VERSION:-3.44.4}"
 FLUTTER_DIR="${HOME}/.flutter-sdk"
 
 echo "▶ Installing Flutter ${FLUTTER_VERSION} (cached at ${FLUTTER_DIR})..."

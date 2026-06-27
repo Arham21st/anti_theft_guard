@@ -37,28 +37,84 @@ class WebAuthState extends ChangeNotifier {
 }
 
 /// Provides [WebAuthState] to descendants and rebuilds them when it changes.
-class WebAuthProvider extends InheritedNotifier {
+///
+/// Supports a [builder] form (preferred) so callers that need the [WebAuthState]
+/// instance — e.g. to wire it into a `GoRouter.refreshListenable` — can receive
+/// it directly. Also still works as a plain `InheritedNotifier` for descendants
+/// that only read it via [of].
+class WebAuthProvider extends StatefulWidget {
   const WebAuthProvider({
     super.key,
-    required WebAuthState authState,
-    required super.child,
-  }) : super(notifier: authState);
+    required this.authState,
+    this.builder,
+    this.child,
+  });
+
+  final WebAuthState authState;
+
+  /// Receives the build context and the [authState]. Use this when a child
+  /// needs the notifier instance itself (not just to depend on it).
+  final Widget Function(BuildContext context, WebAuthState authState)? builder;
+
+  /// Alternative to [builder] for a static subtree.
+  final Widget? child;
+
+  @override
+  State<WebAuthProvider> createState() => _WebAuthProviderState();
 
   static WebAuthState of(BuildContext context) {
     final provider =
-        context.dependOnInheritedWidgetOfExactType<WebAuthProvider>();
+        context.dependOnInheritedWidgetOfExactType<_WebAuthInherited>();
     if (provider == null) {
       throw FlutterError(
         'WebAuthProvider.of() called with a context that does not contain a '
         'WebAuthProvider. Wrap the web MaterialApp in WebAuthProvider.',
       );
     }
-    return provider.notifier! as WebAuthState;
+    return provider.authState;
   }
 
   static WebAuthState? ofOrNull(BuildContext context) {
     final provider =
-        context.getInheritedWidgetOfExactType<WebAuthProvider>();
-    return provider?.notifier as WebAuthState?;
+        context.getInheritedWidgetOfExactType<_WebAuthInherited>();
+    return provider?.authState;
   }
+}
+
+class _WebAuthProviderState extends State<WebAuthProvider> {
+  @override
+  void initState() {
+    super.initState();
+    widget.authState.addListener(_handleChange);
+  }
+
+  @override
+  void dispose() {
+    widget.authState.removeListener(_handleChange);
+    super.dispose();
+  }
+
+  void _handleChange() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _WebAuthInherited(
+      authState: widget.authState,
+      child: widget.builder != null
+          ? widget.builder!(context, widget.authState)
+          : widget.child!,
+    );
+  }
+}
+
+class _WebAuthInherited extends InheritedWidget {
+  const _WebAuthInherited({required this.authState, required super.child});
+
+  final WebAuthState authState;
+
+  @override
+  bool updateShouldNotify(_WebAuthInherited oldWidget) =>
+      authState != oldWidget.authState;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../auth/user_role.dart';
@@ -163,8 +164,9 @@ class AdminSidebar extends StatelessWidget {
             danger: true,
             onTap: () {
               auth.logout();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(AdminRoutes.login, (_) => false);
+              // The router's redirect (driven by refreshListenable) sends the
+              // now-logged-out user to login automatically.
+              context.go(AdminRoutes.login);
               if (!persistent) Navigator.of(context).pop();
             },
           ),

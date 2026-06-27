@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "flutter build web --release --target lib/admin/admin_main.dart --dart-define=APP_VARIANT=admin --base-href=/",
+  "outputDirectory": "build/web",
+  "framework": null,
+  "installCommand": "flutter pub get",
+  "rewrites": [
+    {
+      "source": "/((?!assets/|icons/|favicon|manifest.json|flutter.js|flutter_bootstrap.js|index.html|main.dart.js|version.json).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

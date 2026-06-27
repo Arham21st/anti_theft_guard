@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../auth/mock_accounts.dart';
@@ -56,7 +57,9 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
     setState(() => _isSubmitting = false);
 
     if (ok) {
-      Navigator.pushReplacementNamed(context, AdminRoutes.overview);
+      // The router's redirect (refreshListenable) also sends us to overview
+      // after login; this explicit go keeps it robust regardless of timing.
+      context.go(AdminRoutes.overview);
     } else {
       setState(() => _error = 'Invalid email or password. Try a demo account below.');
     }

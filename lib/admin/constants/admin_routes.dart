@@ -77,9 +77,13 @@ class AdminRoutes {
     }
   }
 
-  /// Check if a given route string is a valid admin route
+  /// Check if a given route string is a valid admin route.
+  ///
+  /// Includes the shell pages ([allRoutes]) plus the [login] and [root]
+  /// entry points, so they're no longer misclassified as invalid.
   static bool isValidRoute(String? route) {
     if (route == null) return false;
+    if (route == login || route == root) return true;
     return allRoutes.any((r) => route.startsWith(r));
   }
 

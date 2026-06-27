@@ -39,6 +39,9 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
+# Vercel (local project link metadata)
+.vercel/
+
 # ==========================================
 # Android Specifics
 # ==========================================

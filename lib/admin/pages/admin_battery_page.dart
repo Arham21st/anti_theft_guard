@@ -21,17 +21,13 @@ class AdminBatteryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lowBatteryDevices = AdminMockData.devices.where(
-      (device) => device.batteryLevel <= 20,
-    );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AdminPageHeader(
           title: 'Battery Monitor',
           subtitle:
-              'Fleet battery health and static discharge chart for ${selectedDevice.deviceName}.',
+              'Battery health and static discharge chart for ${selectedDevice.deviceName}.',
           actions: [
             AdminStatusBadge.custom(
               label: '${selectedDevice.batteryLevel}% selected',
@@ -42,7 +38,7 @@ class AdminBatteryPage extends StatelessWidget {
         const SizedBox(height: 22),
         AdminResponsiveGrid(
           minItemWidth: 320,
-          maxColumns: 3,
+          maxColumns: 2,
           children: [
             AdminPanel(
               header: 'Selected battery',
@@ -63,44 +59,12 @@ class AdminBatteryPage extends StatelessWidget {
                 ],
               ),
             ),
-            const AdminPanel(
-              header: 'Low battery automation',
-              child: Column(
-                children: [
-                  AdminToggleRow(
-                    title: 'Auto-SMS on low battery',
-                    subtitle: 'Send location when threshold is reached',
-                    icon: Icons.sms_rounded,
-                    color: AppColors.warning,
-                    initialValue: true,
-                  ),
-                  SizedBox(height: 18),
-                  AdminSectionTitle(title: 'Threshold'),
-                  SizedBox(height: 8),
-                  _StaticSlider(value: 15),
-                ],
-              ),
-            ),
           ],
         ),
         const SizedBox(height: 18),
-        AdminResponsiveGrid(
-          minItemWidth: 420,
-          maxColumns: 2,
-          children: [
-            const AdminPanel(
-              header: 'Discharge history',
-              child: _BatteryChart(),
-            ),
-            AdminPanel(
-              header: 'Low battery devices',
-              child: Column(
-                children: lowBatteryDevices.map((device) {
-                  return _DeviceBatteryRow(device: device);
-                }).toList(),
-              ),
-            ),
-          ],
+        const AdminPanel(
+          header: 'Discharge history',
+          child: _BatteryChart(),
         ),
       ],
     );

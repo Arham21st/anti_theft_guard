@@ -83,7 +83,11 @@ class AdminNavigationShell extends StatelessWidget {
                       },
                       showMenu: !isWide,
                     ),
-                    Expanded(child: navigationShell),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: navigationShell,
+                      ),
+                    ),
                   ],
                 ),
               ),

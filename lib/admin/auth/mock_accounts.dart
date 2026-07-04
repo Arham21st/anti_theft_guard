@@ -53,12 +53,12 @@ class MockAccounts {
   // NOTE: emails are intentionally kept short/demo for easy typing on the
   // login screen. They map onto the device owners in AdminMockData.
   static const List<_DemoAccount> _accounts = [
-    _DemoAccount(
-      email: 'admin@guard.io',
-      password: 'admin123',
-      displayName: 'Fleet Admin',
-      role: UserRole.admin,
-    ),
+    // _DemoAccount(
+    //   email: 'admin@guard.io',
+    //   password: 'admin123',
+    //   displayName: 'Fleet Admin',
+    //   role: UserRole.admin,
+    // ),
     // End-user demo accounts — each owns exactly one mock device.
     _DemoAccount(
       email: 'sara@guard.io',
@@ -86,11 +86,10 @@ class MockAccounts {
   /// All demo accounts, for rendering the login-screen hint card.
   /// Returns public view (no password reuse — callers get a [MockAccountDemo]).
   static List<MockAccountDemo> get demos => _accounts
-      .map((a) => MockAccountDemo(
-            email: a.email,
-            password: a.password,
-            role: a.role,
-          ))
+      .map(
+        (a) =>
+            MockAccountDemo(email: a.email, password: a.password, role: a.role),
+      )
       .toList();
 
   /// Authenticate. Returns a session on success, or `null` on bad credentials.

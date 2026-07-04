@@ -17,7 +17,8 @@ class WebAuthState extends ChangeNotifier {
   MockSession? get session => _session;
 
   bool get isLoggedIn => _session != null;
-  UserRole get role => _session?.role ?? UserRole.user;
+  // Web portal is user-mode only; admin mode is disabled.
+  UserRole get role => UserRole.user;
   String? get userEmail => _session?.email;
   String? get userDeviceId => _session?.deviceId;
 

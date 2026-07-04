@@ -61,7 +61,9 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
       // after login; this explicit go keeps it robust regardless of timing.
       context.go(AdminRoutes.overview);
     } else {
-      setState(() => _error = 'Invalid email or password. Try a demo account below.');
+      setState(
+        () => _error = 'Invalid email or password. Try a demo account below.',
+      );
     }
   }
 
@@ -90,29 +92,39 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
               children: [
                 // Brand header
                 Center(
-                  child: Container(
-                        width: 56,
-                        height: 56,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: AppColors.primary.withOpacity(0.35)),
-                        ),
-                        child: const Icon(Icons.shield_rounded,
-                            color: AppColors.primary, size: 28),
-                      )
-                      .animate()
-                      .fadeIn(duration: 400.ms)
-                      .scale(begin: const Offset(0.8, 0.8)),
+                  child:
+                      Container(
+                            width: 56,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppColors.primary.withOpacity(0.35),
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.shield_rounded,
+                              color: AppColors.primary,
+                              size: 28,
+                            ),
+                          )
+                          .animate()
+                          .fadeIn(duration: 400.ms)
+                          .scale(begin: const Offset(0.8, 0.8)),
                 ),
                 const SizedBox(height: 18),
-                Text('Anti-Theft Guard',
-                    style: AdminTextStyles.pageTitle.copyWith(fontSize: 22),
-                    textAlign: TextAlign.center),
+                Text(
+                  'Anti-Theft Guard',
+                  style: AdminTextStyles.pageTitle.copyWith(fontSize: 22),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 6),
-                Text('Sign in to view your device',
-                    style: AdminTextStyles.body, textAlign: TextAlign.center),
+                Text(
+                  'Sign in to view your device',
+                  style: AdminTextStyles.body,
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 28),
 
                 // Form panel
@@ -132,12 +144,16 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                         controller: _emailCtrl,
                         keyboardType: TextInputType.emailAddress,
                         autocorrect: false,
-                        style: AdminTextStyles.body
-                            .copyWith(color: AppColors.textPrimary),
+                        style: AdminTextStyles.body.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
                         decoration: const InputDecoration(
                           hintText: 'you@example.com',
-                          prefixIcon: Icon(Icons.mail_outline_rounded,
-                              color: AppColors.textTertiary, size: 18),
+                          prefixIcon: Icon(
+                            Icons.mail_outline_rounded,
+                            color: AppColors.textTertiary,
+                            size: 18,
+                          ),
                         ),
                         onSubmitted: (_) => _submit(),
                       ),
@@ -147,12 +163,16 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                       TextField(
                         controller: _pwdCtrl,
                         obscureText: _obscure,
-                        style: AdminTextStyles.body
-                            .copyWith(color: AppColors.textPrimary),
+                        style: AdminTextStyles.body.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
                         decoration: InputDecoration(
                           hintText: '••••••••',
-                          prefixIcon: const Icon(Icons.lock_outline_rounded,
-                              color: AppColors.textTertiary, size: 18),
+                          prefixIcon: const Icon(
+                            Icons.lock_outline_rounded,
+                            color: AppColors.textTertiary,
+                            size: 18,
+                          ),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscure
@@ -181,15 +201,20 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                                   width: 16,
                                   height: 16,
                                   child: CircularProgressIndicator(
-                                      strokeWidth: 2, color: Colors.white),
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
                                 )
                               : const Icon(Icons.login_rounded, size: 18),
-                          label: Text(_isSubmitting ? 'Signing in…' : 'Sign in'),
+                          label: Text(
+                            _isSubmitting ? 'Signing in…' : 'Sign in',
+                          ),
                           style: FilledButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                             textStyle: AdminTextStyles.label,
                           ),
                         ),
@@ -218,12 +243,17 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline_rounded,
-              color: AppColors.danger, size: 16),
+          const Icon(
+            Icons.error_outline_rounded,
+            color: AppColors.danger,
+            size: 16,
+          ),
           const SizedBox(width: 8),
           Expanded(
-            child: Text(message,
-                style: AdminTextStyles.small.copyWith(color: AppColors.danger)),
+            child: Text(
+              message,
+              style: AdminTextStyles.small.copyWith(color: AppColors.danger),
+            ),
           ),
         ],
       ),
@@ -244,11 +274,16 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline_rounded,
-                  color: AppColors.info, size: 16),
+              const Icon(
+                Icons.info_outline_rounded,
+                color: AppColors.info,
+                size: 16,
+              ),
               const SizedBox(width: 8),
-              Text('Demo accounts — tap to fill',
-                  style: AdminTextStyles.label.copyWith(color: AppColors.info)),
+              Text(
+                'Demo accounts — tap to fill',
+                style: AdminTextStyles.label.copyWith(color: AppColors.info),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -256,22 +291,23 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
             spacing: 8,
             runSpacing: 8,
             children: MockAccounts.demos.map((d) {
-              final isAdmin = d.role.name == 'admin';
               return ActionChip(
                 label: Text(
-                  isAdmin ? 'Admin' : d.email.split('@').first,
-                  style: AdminTextStyles.small
-                      .copyWith(color: AppColors.textPrimary),
+                  d.email.split('@').first,
+                  style: AdminTextStyles.small.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
                 ),
                 avatar: Icon(
-                  isAdmin ? Icons.admin_panel_settings_rounded : Icons.person_rounded,
+                  Icons.person_rounded,
                   size: 15,
-                  color: isAdmin ? AppColors.warning : AppColors.info,
+                  color: AppColors.info,
                 ),
                 backgroundColor: AppColors.surfaceElevated,
                 side: BorderSide(color: AppColors.border),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 onPressed: () => _fillDemo(d),
               );
             }).toList(),

@@ -15,7 +15,8 @@ class EmergencySmsScreen extends StatefulWidget {
 class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
   bool _sendLocation = true;
   bool _sendBattery = true;
-  bool _sendWipeCode = false;
+  // Wipe code flow disabled.
+  // bool _sendWipeCode = false;
 
   final List<_Contact> _contacts = [
     _Contact('Wife', '+1 234 567 8901', true),
@@ -83,14 +84,15 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
                         _sendBattery,
                         (v) => setState(() => _sendBattery = v),
                       ),
-                      Divider(color: AppColors.border, height: 24),
-                      _buildToggleRow(
-                        'Remote Wipe Code',
-                        'Include instructions to wipe device',
-                        _sendWipeCode,
-                        (v) => setState(() => _sendWipeCode = v),
-                        isDanger: true,
-                      ),
+                      // Wipe code flow disabled.
+                      // Divider(color: AppColors.border, height: 24),
+                      // _buildToggleRow(
+                      //   'Remote Wipe Code',
+                      //   'Include instructions to wipe device',
+                      //   _sendWipeCode,
+                      //   (v) => setState(() => _sendWipeCode = v),
+                      //   isDanger: true,
+                      // ),
                     ],
                   ),
                 ).animate().fadeIn(delay: 340.ms),
@@ -252,7 +254,8 @@ class _EmergencySmsScreenState extends State<EmergencySmsScreen> {
             'My phone was marked stolen.\n\n'
             '${_sendLocation ? '📍 Loc: https://maps.google.com/?q=24.8607,67.0011\n' : ''}'
             '${_sendBattery ? '🔋 Bat: 42% (Discharging)\n' : ''}'
-            '${_sendWipeCode ? '🗑️ Text "WIPE_XYZ99" to factory reset this device.\n' : ''}'
+            // wipe flow removed
+            ''
             '\nDo not call. Silent mode is active.',
             style: AppTextStyles.bodyMedium.copyWith(color: Colors.white),
           ),

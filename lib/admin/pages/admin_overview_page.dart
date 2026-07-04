@@ -164,12 +164,6 @@ class _UserOverview extends StatelessWidget {
                   onPressed: () => onNavigate(2),
                   color: AppColors.info,
                 ),
-                AdminPrimaryButton(
-                  label: 'Send emergency SMS',
-                  icon: Icons.sms_rounded,
-                  onPressed: () => onNavigate(6),
-                  color: AppColors.warning,
-                ),
               ],
             ),
           ),

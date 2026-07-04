@@ -169,6 +169,11 @@ String? _guard(WebAuthState auth, GoRouterState state) {
   // Logged in on the login page → send to overview.
   if (isLogin) return AdminRoutes.overview;
 
+  // Hidden routes (no longer reachable in the UI): redirect to overview.
+  if (_isHiddenRoute(location)) {
+    return AdminRoutes.overview;
+  }
+
   // Role guard: end-users may not visit fleet-only pages.
   if (auth.role == UserRole.user && _isAdminOnly(location)) {
     return AdminRoutes.overview;
@@ -180,6 +185,12 @@ String? _guard(WebAuthState auth, GoRouterState state) {
 bool _isAdminOnly(String location) {
   return location.startsWith(AdminRoutes.devices) ||
       location.startsWith(AdminRoutes.security);
+}
+
+/// Routes whose sidebar entries have been removed (Emergency SMS + Settings).
+bool _isHiddenRoute(String location) {
+  return location.startsWith(AdminRoutes.sms) ||
+      location.startsWith(AdminRoutes.settings);
 }
 
 // ── Login shim ────────────────────────────────────────────────────────────────

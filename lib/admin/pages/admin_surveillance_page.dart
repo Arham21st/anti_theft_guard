@@ -152,22 +152,107 @@ class _CaptureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFront = capture.camera == 'Front';
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surfaceElevated,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: capture.color.withOpacity(0.25)),
       ),
+      clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AdminEmptyMediaTile(
-            icon: capture.camera == 'Front'
-                ? Icons.camera_front_rounded
-                : Icons.camera_rear_rounded,
-            title: '${capture.camera} camera',
-            subtitle: capture.timestamp,
-            color: capture.color,
+          // 4:3 photo placeholder — no real image yet.
+          AspectRatio(
+            aspectRatio: 4 / 3,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: DashedBorder(
+                    color: capture.color.withOpacity(0.4),
+                    child: Container(
+                      color: AppColors.surfaceHighest.withOpacity(0.5),
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isFront
+                                ? Icons.camera_front_rounded
+                                : Icons.camera_rear_rounded,
+                            color: capture.color.withOpacity(0.7),
+                            size: 30,
+                          ),
+                          const SizedBox(height: 10),
+                          Icon(
+                            Icons.image_outlined,
+                            color: AppColors.textTertiary,
+                            size: 22,
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'No photo yet',
+                            style: AdminTextStyles.small
+                                .copyWith(color: AppColors.textTertiary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isFront
+                              ? Icons.camera_front_rounded
+                              : Icons.camera_rear_rounded,
+                          size: 13,
+                          color: capture.color,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${capture.camera} camera',
+                          style: AdminTextStyles.small
+                              .copyWith(color: AppColors.textSecondary),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Text(
+                      capture.timestamp,
+                      style: AdminTextStyles.small
+                          .copyWith(color: AppColors.textSecondary),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(12),
@@ -184,6 +269,56 @@ class _CaptureCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// A dashed outline border wrapper used for image placeholders.
+class DashedBorder extends StatelessWidget {
+  const DashedBorder({super.key, required this.child, required this.color});
+
+  final Widget child;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _DashedBorderPainter(color: color),
+      child: child,
+    );
+  }
+}
+
+class _DashedBorderPainter extends CustomPainter {
+  _DashedBorderPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1.2
+      ..style = PaintingStyle.stroke;
+    const dashWidth = 6.0;
+    const dashSpace = 5.0;
+    // Top + bottom
+    for (double x = 0; x < size.width; x += dashWidth + dashSpace) {
+      canvas.drawLine(
+          Offset(x, 0), Offset(x + dashWidth, 0), paint);
+      canvas.drawLine(Offset(x, size.height),
+          Offset(x + dashWidth, size.height), paint);
+    }
+    // Left + right
+    for (double y = 0; y < size.height; y += dashWidth + dashSpace) {
+      canvas.drawLine(
+          Offset(0, y), Offset(0, y + dashWidth), paint);
+      canvas.drawLine(Offset(size.width, y),
+          Offset(size.width, y + dashWidth), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedBorderPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 class _RecordingRow extends StatelessWidget {

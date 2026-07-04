@@ -33,9 +33,9 @@ class AdminSidebar extends StatelessWidget {
     _AdminDestination(Icons.location_on_rounded, 'Location', null),
     _AdminDestination(Icons.receipt_long_rounded, 'Alerts & Logs', null),
     _AdminDestination(Icons.admin_panel_settings_rounded, 'Security', 'admin'),
-    _AdminDestination(Icons.sms_rounded, 'Emergency SMS', null),
+    _AdminDestination(Icons.sms_rounded, 'Emergency SMS', null, hidden: true),
     _AdminDestination(Icons.battery_charging_full_rounded, 'Battery', null),
-    _AdminDestination(Icons.settings_rounded, 'Settings', null),
+    _AdminDestination(Icons.settings_rounded, 'Settings', null, hidden: true),
   ];
 
   @override
@@ -226,7 +226,8 @@ class _SidebarItem extends StatelessWidget {
 }
 
 class _AdminDestination {
-  const _AdminDestination(this.icon, this.label, this.roleTag);
+  const _AdminDestination(this.icon, this.label, this.roleTag,
+      {this.hidden = false});
 
   final IconData icon;
   final String label;
@@ -234,11 +235,16 @@ class _AdminDestination {
   /// `null` = visible to all roles; otherwise a role tag (e.g. 'admin').
   final String? roleTag;
 
+  /// When `true`, the destination is hidden from the sidebar for everyone
+  /// (its slot in the index order is still reserved for route math).
+  final bool hidden;
+
   /// Index of this destination in the full list — matches the shell's
   /// IndexedStack order, so we can pass it straight through to the shell.
   int get stackIndex => AdminSidebar._allDestinations.indexOf(this);
 
   bool visibleFor(UserRole role) {
+    if (hidden) return false;
     if (roleTag == null) return true; // all roles
     if (roleTag == 'admin') return role == UserRole.admin;
     return false;

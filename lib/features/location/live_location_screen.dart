@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/widgets/glass_card.dart';
-import '../../core/widgets/glow_button.dart';
 import '../../core/widgets/pulse_indicator.dart';
 
 class LiveLocationScreen extends StatefulWidget {
@@ -321,14 +320,6 @@ class _LiveLocationScreenState extends State<LiveLocationScreen> {
           ),
         ).animate().fadeIn(delay: 360.ms),
         const SizedBox(height: 16),
-        GlowButton(
-          label: 'Share Location',
-          icon: Icons.share_location_rounded,
-          onPressed: () {},
-          gradient: AppColors.primaryGradient,
-          glowColor: AppColors.primary,
-        ).animate().fadeIn(delay: 420.ms),
-        const SizedBox(height: 10),
         OutlineButton(
           label: 'View on Map',
           icon: Icons.open_in_new_rounded,

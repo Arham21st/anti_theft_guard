@@ -38,37 +38,9 @@ class AdminLocationPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 22),
-        AdminResponsiveGrid(
-          minItemWidth: 440,
-          maxColumns: 2,
-          children: [
-            AdminPanel(
-              padding: EdgeInsets.zero,
-              child: _FleetMap(selectedDevice: selectedDevice),
-            ),
-            AdminPanel(
-              header: 'Selected device',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AdminDeviceIdentity(device: selectedDevice),
-                  const SizedBox(height: 16),
-                  AdminMetricGrid(
-                    metrics: [
-                      AdminMetricData(
-                        'Coordinates',
-                        selectedDevice.coordinates,
-                        AppColors.success,
-                      ),
-                      const AdminMetricData('Accuracy', '5m', AppColors.info),
-                      const AdminMetricData('Speed', '0 km/h', AppColors.warning),
-                      const AdminMetricData('Altitude', '12m', AppColors.textSecondary),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
+        AdminPanel(
+          padding: EdgeInsets.zero,
+          child: _FleetMap(selectedDevice: selectedDevice),
         ),
         const SizedBox(height: 18),
         AdminPanel(
@@ -109,21 +81,13 @@ class _FleetMap extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(child: CustomPaint(painter: _MapPainter())),
-          ...AdminMockData.devices.asMap().entries.map((entry) {
-            final isSelected = entry.value.id == selectedDevice.id;
-            final left = 56.0 + (entry.key * 53) % 260;
-            final top = 54.0 + (entry.key * 71) % 220;
-            return Positioned(
-              left: left,
-              top: top,
-              child: _MapMarker(device: entry.value, selected: isSelected),
-            );
-          }),
+          // Show only the current device's location, centered.
+          Center(child: _MapMarker(device: selectedDevice, selected: true)),
           const Positioned(
             left: 16,
             top: 16,
             child: AdminStatusBadge.custom(
-              label: 'Karachi fleet map',
+              label: 'Current location',
               color: AppColors.info,
             ),
           ),

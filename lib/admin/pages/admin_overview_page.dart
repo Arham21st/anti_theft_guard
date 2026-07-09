@@ -29,8 +29,7 @@ class AdminOverviewPage extends StatelessWidget {
     if (role == UserRole.user) {
       return _UserOverview(device: selectedDevice, onNavigate: onNavigate);
     }
-    return _AdminFleetOverview(
-        device: selectedDevice, onNavigate: onNavigate);
+    return _AdminFleetOverview(device: selectedDevice, onNavigate: onNavigate);
   }
 }
 
@@ -129,13 +128,17 @@ class _UserOverview extends StatelessWidget {
                   const SizedBox(height: 14),
                   AdminInfoLine(label: 'Model', value: device.model),
                   const SizedBox(height: 8),
-                  AdminInfoLine(label: 'Coordinates', value: device.coordinates),
+                  AdminInfoLine(
+                    label: 'Coordinates',
+                    value: device.coordinates,
+                  ),
                   const SizedBox(height: 8),
                   AdminInfoLine(label: 'Trigger', value: device.triggerMethod),
                   const SizedBox(height: 8),
                   AdminInfoLine(
-                      label: 'Stealth',
-                      value: device.stealthEnabled ? 'Enabled' : 'Disabled'),
+                    label: 'Stealth',
+                    value: device.stealthEnabled ? 'Enabled' : 'Disabled',
+                  ),
                 ],
               ),
             ),
@@ -235,8 +238,8 @@ class _DeviceStatusBanner extends StatelessWidget {
                   device.status == DeviceProtectionStatus.stolen
                       ? 'This device is flagged stolen. Tracking and surveillance remain active.'
                       : device.status == DeviceProtectionStatus.offline
-                          ? 'This device is currently offline. Last seen ${device.lastSeen}.'
-                          : 'Anti-theft protection is active and monitoring.',
+                      ? 'This device is currently offline. Last seen ${device.lastSeen}.'
+                      : 'Anti-theft protection is active and monitoring.',
                   style: AdminTextStyles.small,
                 ),
               ],
@@ -440,8 +443,8 @@ class _RecentActivityPanel extends StatelessWidget {
         return Icons.camera_alt_rounded;
       case AdminEventType.location:
         return Icons.location_on_rounded;
-      case AdminEventType.sms:
-        return Icons.sms_rounded;
+      // case AdminEventType.sms:
+      //   return Icons.sms_rounded;
       case AdminEventType.system:
         return Icons.restart_alt_rounded;
       case AdminEventType.security:
@@ -495,8 +498,8 @@ class _RecentActivityPanel extends StatelessWidget {
                           AdminStatusBadge.severity(severity: event.severity),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(event.description, style: AdminTextStyles.small),
+                      // const SizedBox(height: 4),
+                      // Text(event.description, style: AdminTextStyles.small),
                       const SizedBox(height: 4),
                       Text(
                         event.time,
@@ -597,8 +600,16 @@ class _SelectedDeviceSummary extends StatelessWidget {
                 '${device.batteryLevel}%',
                 _batteryColor(device.batteryLevel),
               ),
-              AdminMetricData('Photos', '${device.capturedPhotos}', AppColors.info),
-              AdminMetricData('Videos', '${device.recordings}', AppColors.danger),
+              AdminMetricData(
+                'Photos',
+                '${device.capturedPhotos}',
+                AppColors.info,
+              ),
+              AdminMetricData(
+                'Videos',
+                '${device.recordings}',
+                AppColors.danger,
+              ),
               AdminMetricData('SMS', '${device.smsAlerts}', AppColors.warning),
             ],
           ),

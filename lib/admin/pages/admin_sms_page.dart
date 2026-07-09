@@ -66,7 +66,8 @@ class AdminSmsPage extends StatelessWidget {
                       child: AdminEmptyState(
                         icon: Icons.person_off_outlined,
                         title: 'No contacts on this device',
-                        subtitle: 'Demo contacts are attached to other devices.',
+                        subtitle:
+                            'Demo contacts are attached to other devices.',
                       ),
                     )
                   : AdminDataTable(
@@ -96,7 +97,9 @@ class AdminSmsPage extends StatelessWidget {
                             DataCell(
                               AdminStatusBadge.custom(
                                 label: contact.enabled ? 'Enabled' : 'Off',
-                                color: contact.enabled ? AppColors.success : AppColors.textTertiary,
+                                color: contact.enabled
+                                    ? AppColors.success
+                                    : AppColors.textTertiary,
                               ),
                             ),
                           ],
@@ -141,40 +144,41 @@ class AdminSmsPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 18),
-        AdminPanel(
-          header: 'Delivery history',
-          padding: const EdgeInsets.only(top: 16),
-          child: AdminDataTable(
-            columns: const [
-              DataColumn(label: Text('Event')),
-              DataColumn(label: Text('Description')),
-              DataColumn(label: Text('Severity')),
-              DataColumn(label: Text('Time')),
-            ],
-            rows: AdminMockData.events
-                .where((event) => event.type == AdminEventType.sms)
-                .map((event) {
-              final color = _severityColor(event.severity);
-              return DataRow(
-                cells: [
-                  DataCell(
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(_eventIcon(event.type), color: color, size: 18),
-                        const SizedBox(width: 8),
-                        Text(event.title),
-                      ],
-                    ),
-                  ),
-                  DataCell(Text(event.description)),
-                  DataCell(AdminStatusBadge.severity(severity: event.severity)),
-                  DataCell(Text(event.time)),
-                ],
-              );
-            }).toList(),
-          ),
-        ),
+
+        // AdminPanel(
+        //   header: 'Delivery history',
+        //   padding: const EdgeInsets.only(top: 16),
+        //   child: AdminDataTable(
+        //     columns: const [
+        //       DataColumn(label: Text('Event')),
+        //       DataColumn(label: Text('Description')),
+        //       DataColumn(label: Text('Severity')),
+        //       DataColumn(label: Text('Time')),
+        //     ],
+        //     rows: AdminMockData.events
+        //         .where((event) => event.type == AdminEventType.sms)
+        //         .map((event) {
+        //       final color = _severityColor(event.severity);
+        //       return DataRow(
+        //         cells: [
+        //           DataCell(
+        //             Row(
+        //               mainAxisSize: MainAxisSize.min,
+        //               children: [
+        //                 Icon(_eventIcon(event.type), color: color, size: 18),
+        //                 const SizedBox(width: 8),
+        //                 Text(event.title),
+        //               ],
+        //             ),
+        //           ),
+        //           DataCell(Text(event.description)),
+        //           DataCell(AdminStatusBadge.severity(severity: event.severity)),
+        //           DataCell(Text(event.time)),
+        //         ],
+        //       );
+        //     }).toList(),
+        //   ),
+        // ),
       ],
     );
   }

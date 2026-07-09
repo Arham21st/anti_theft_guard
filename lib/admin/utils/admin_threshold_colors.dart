@@ -35,7 +35,10 @@ class AdminThresholdColors {
   static const Color batteryCharging = AppColors.info;
 
   /// Get battery status text
-  static String getBatteryStatusText(int percentage, {bool isCharging = false}) {
+  static String getBatteryStatusText(
+    int percentage, {
+    bool isCharging = false,
+  }) {
     if (isCharging) return 'Charging';
     if (percentage <= batteryCritical) return 'Critical';
     if (percentage <= batteryWarning) return 'Low';
@@ -125,8 +128,8 @@ class AdminThresholdColors {
         return Icons.camera_alt_rounded;
       case AdminEventType.location:
         return Icons.location_on_rounded;
-      case AdminEventType.sms:
-        return Icons.sms_rounded;
+      // case AdminEventType.sms:
+      //   return Icons.sms_rounded;
       case AdminEventType.system:
         return Icons.settings_rounded;
       case AdminEventType.security:
@@ -143,8 +146,8 @@ class AdminThresholdColors {
         return 'Capture';
       case AdminEventType.location:
         return 'Location';
-      case AdminEventType.sms:
-        return 'SMS';
+      // case AdminEventType.sms:
+      //   return 'SMS';
       case AdminEventType.system:
         return 'System';
       case AdminEventType.security:
@@ -294,7 +297,8 @@ extension DeviceProtectionStatusExtension on DeviceProtectionStatus {
   Color get color => AdminThresholdColors.deviceStatus(this);
 
   /// Get the display name for this status
-  String get displayName => AdminThresholdColors.getDeviceStatusDisplayName(this);
+  String get displayName =>
+      AdminThresholdColors.getDeviceStatusDisplayName(this);
 
   /// Get the icon for this status
   IconData get icon => AdminThresholdColors.getDeviceStatusIcon(this);

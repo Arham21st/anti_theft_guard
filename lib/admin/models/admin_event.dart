@@ -1,4 +1,4 @@
-enum AdminEventType { capture, location, sms, system, security, battery }
+enum AdminEventType { capture, location, system, security, battery }
 
 enum AdminSeverity { info, success, warning, critical }
 

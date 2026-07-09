@@ -175,29 +175,10 @@ class _CaptureCard extends StatelessWidget {
                       color: AppColors.surfaceHighest.withOpacity(0.5),
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(12),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            isFront
-                                ? Icons.camera_front_rounded
-                                : Icons.camera_rear_rounded,
-                            color: capture.color.withOpacity(0.7),
-                            size: 30,
-                          ),
-                          const SizedBox(height: 10),
-                          Icon(
-                            Icons.image_outlined,
-                            color: AppColors.textTertiary,
-                            size: 22,
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'No photo yet',
-                            style: AdminTextStyles.small
-                                .copyWith(color: AppColors.textTertiary),
-                          ),
-                        ],
+                      child: Icon(
+                        Icons.image_outlined,
+                        color: AppColors.textTertiary,
+                        size: 22,
                       ),
                     ),
                   ),
@@ -207,7 +188,9 @@ class _CaptureCard extends StatelessWidget {
                   top: 8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.surface.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(6),
@@ -226,8 +209,9 @@ class _CaptureCard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           '${capture.camera} camera',
-                          style: AdminTextStyles.small
-                              .copyWith(color: AppColors.textSecondary),
+                          style: AdminTextStyles.small.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -238,7 +222,9 @@ class _CaptureCard extends StatelessWidget {
                   top: 8,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.surface.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(6),
@@ -246,8 +232,9 @@ class _CaptureCard extends StatelessWidget {
                     ),
                     child: Text(
                       capture.timestamp,
-                      style: AdminTextStyles.small
-                          .copyWith(color: AppColors.textSecondary),
+                      style: AdminTextStyles.small.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ),
                 ),
@@ -302,17 +289,21 @@ class _DashedBorderPainter extends CustomPainter {
     const dashSpace = 5.0;
     // Top + bottom
     for (double x = 0; x < size.width; x += dashWidth + dashSpace) {
+      canvas.drawLine(Offset(x, 0), Offset(x + dashWidth, 0), paint);
       canvas.drawLine(
-          Offset(x, 0), Offset(x + dashWidth, 0), paint);
-      canvas.drawLine(Offset(x, size.height),
-          Offset(x + dashWidth, size.height), paint);
+        Offset(x, size.height),
+        Offset(x + dashWidth, size.height),
+        paint,
+      );
     }
     // Left + right
     for (double y = 0; y < size.height; y += dashWidth + dashSpace) {
+      canvas.drawLine(Offset(0, y), Offset(0, y + dashWidth), paint);
       canvas.drawLine(
-          Offset(0, y), Offset(0, y + dashWidth), paint);
-      canvas.drawLine(Offset(size.width, y),
-          Offset(size.width, y + dashWidth), paint);
+        Offset(size.width, y),
+        Offset(size.width, y + dashWidth),
+        paint,
+      );
     }
   }
 

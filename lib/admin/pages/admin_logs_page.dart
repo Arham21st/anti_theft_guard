@@ -22,7 +22,7 @@ class AdminLogsPage extends StatefulWidget {
 class _AdminLogsPageState extends State<AdminLogsPage> {
   String _filter = 'All';
 
-  static const _filters = ['All', 'Captures', 'Location', 'SMS', 'System'];
+  static const _filters = ['All', 'Captures', 'Location', 'System'];
 
   Color _severityColor(AdminSeverity severity) {
     switch (severity) {
@@ -43,8 +43,6 @@ class _AdminLogsPageState extends State<AdminLogsPage> {
         return Icons.camera_alt_rounded;
       case AdminEventType.location:
         return Icons.location_on_rounded;
-      case AdminEventType.sms:
-        return Icons.sms_rounded;
       case AdminEventType.system:
         return Icons.restart_alt_rounded;
       case AdminEventType.security:
@@ -72,7 +70,6 @@ class _AdminLogsPageState extends State<AdminLogsPage> {
       if (_filter == 'All') return true;
       if (_filter == 'Captures') return event.type == AdminEventType.capture;
       if (_filter == 'Location') return event.type == AdminEventType.location;
-      if (_filter == 'SMS') return event.type == AdminEventType.sms;
       return event.type == AdminEventType.system ||
           event.type == AdminEventType.security ||
           event.type == AdminEventType.battery;
@@ -126,15 +123,15 @@ class _AdminLogsPageState extends State<AdminLogsPage> {
             columns: isUser
                 ? const [
                     DataColumn(label: Text('Event')),
-                    DataColumn(label: Text('Description')),
-                    DataColumn(label: Text('Severity')),
+                    // DataColumn(label: Text('Description')),
+                    // DataColumn(label: Text('Severity')),
                     DataColumn(label: Text('Time')),
                   ]
                 : const [
                     DataColumn(label: Text('Event')),
-                    DataColumn(label: Text('Description')),
+                    // DataColumn(label: Text('Description')),
                     DataColumn(label: Text('Device')),
-                    DataColumn(label: Text('Severity')),
+                    // DataColumn(label: Text('Severity')),
                     DataColumn(label: Text('Time')),
                   ],
             rows: events.map((event) {
@@ -159,7 +156,11 @@ class _AdminLogsPageState extends State<AdminLogsPage> {
               ];
               final cells = isUser
                   ? [...baseCells, ...tailCells]
-                  : [...baseCells, DataCell(Text(_deviceById(event.deviceId).deviceName)), ...tailCells];
+                  : [
+                      ...baseCells,
+                      DataCell(Text(_deviceById(event.deviceId).deviceName)),
+                      ...tailCells,
+                    ];
               return DataRow(cells: cells);
             }).toList(),
           ),

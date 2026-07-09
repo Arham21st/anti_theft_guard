@@ -55,17 +55,21 @@ class AdminBatteryPage extends StatelessWidget {
                   ),
                   const AdminMetricData('Health', 'Good', AppColors.success),
                   const AdminMetricData('Temp', '34 C', AppColors.info),
-                  const AdminMetricData('Voltage', '4.1V', AppColors.textSecondary),
+                  const AdminMetricData(
+                    'Voltage',
+                    '4.1V',
+                    AppColors.textSecondary,
+                  ),
                 ],
               ),
             ),
           ],
         ),
-        const SizedBox(height: 18),
-        const AdminPanel(
-          header: 'Discharge history',
-          child: _BatteryChart(),
-        ),
+        // const SizedBox(height: 18),
+        // const AdminPanel(
+        //   header: 'Discharge history',
+        //   child: _BatteryChart(),
+        // ),
       ],
     );
   }

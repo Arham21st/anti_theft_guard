@@ -67,20 +67,20 @@ class MockAccounts {
       role: UserRole.user,
       deviceId: 'dev-003', // Sara iPhone 15 — status: stolen (demo lost phone)
     ),
-    _DemoAccount(
-      email: 'ayesha@guard.io',
-      password: 'ayesha123',
-      displayName: 'Ayesha Khan',
-      role: UserRole.user,
-      deviceId: 'dev-001', // Ayesha Pixel 8 — protected
-    ),
-    _DemoAccount(
-      email: 'hamza@guard.io',
-      password: 'hamza123',
-      displayName: 'Hamza Ali',
-      role: UserRole.user,
-      deviceId: 'dev-002', // Hamza Galaxy S24 — warning, low battery
-    ),
+    // _DemoAccount(
+    //   email: 'ayesha@guard.io',
+    //   password: 'ayesha123',
+    //   displayName: 'Ayesha Khan',
+    //   role: UserRole.user,
+    //   deviceId: 'dev-001', // Ayesha Pixel 8 — protected
+    // ),
+    // _DemoAccount(
+    //   email: 'hamza@guard.io',
+    //   password: 'hamza123',
+    //   displayName: 'Hamza Ali',
+    //   role: UserRole.user,
+    //   deviceId: 'dev-002', // Hamza Galaxy S24 — warning, low battery
+    // ),
   ];
 
   /// All demo accounts, for rendering the login-screen hint card.

@@ -148,14 +148,14 @@ class _AdminLogsPageState extends State<AdminLogsPage> {
                     ],
                   ),
                 ),
-                DataCell(Text(event.description)),
+                DataCell(Text(event.time)),
               ];
               final tailCells = <DataCell>[
                 DataCell(AdminStatusBadge.severity(severity: event.severity)),
                 DataCell(Text(event.time)),
               ];
               final cells = isUser
-                  ? [...baseCells, ...tailCells]
+                  ? baseCells
                   : [
                       ...baseCells,
                       DataCell(Text(_deviceById(event.deviceId).deviceName)),
